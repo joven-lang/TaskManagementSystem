@@ -24,6 +24,7 @@ namespace TaskManagementSystem.Data
             // Seed Default Admin User
             var adminEmail = "admin@taskapp.com";
             var adminPassword = "Admin@123";
+             
 
             var adminUser = await userManager.FindByEmailAsync(adminEmail);
             if (adminUser == null)

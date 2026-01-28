@@ -1,0 +1,255 @@
+﻿@model TaskManagementSystem.ViewModels.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h2 class="mb-0">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </h2>
+            <p class="text-muted">Welcome back! Here's an overview of your tasks.</p>
+        </div>
+    </div>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Summary Cards Row -->
+    <div class="row g-4 mb-4">
+        <!-- Total Tasks Card -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1 small">Total Tasks</p>
+                            <h3 class="mb-0 fw-bold">@Model.TotalTasks</h3>
+                        </div>
+                        <div class="rounded-circle bg-primary bg-opacity-10 p-3">
+                            <i class="bi bi-list-task fs-4 text-primary"></i>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <a asp-controller="Task" asp-action="Index" class="text-decoration-none small">
+                            View all tasks <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pending Tasks Card -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1 small">Pending Tasks</p>
+                            <h3 class="mb-0 fw-bold text-warning">@Model.PendingTasks</h3>
+                        </div>
+                        <div class="rounded-circle bg-warning bg-opacity-10 p-3">
+                            <i class="bi bi-clock-history fs-4 text-warning"></i>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <small class="text-muted">
+                            @if (Model.TotalTasks > 0)
+                            {
+                                @Math.Round((decimal)Model.PendingTasks / Model.TotalTasks * 100, 1)
+                            
+                                <text>% of total</text>
+                            }
+                            else
+                            {
+                                <text>No tasks yet</text>
+                            }
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Completed Tasks Card -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1 small">Completed Tasks</p>
+                            <h3 class="mb-0 fw-bold text-success">@Model.CompletedTasks</h3>
+                        </div>
+                        <div class="rounded-circle bg-success bg-opacity-10 p-3">
+                            <i class="bi bi-check-circle fs-4 text-success"></i>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <div class="progress" style="height: 6px;">
+                            <div class="progress-bar bg-success"
+                                 role="progressbar"
+                                 style="width: @Model.CompletionRate%;"
+                                 aria-valuenow="@Model.CompletionRate"
+                                 aria-valuemin="0"
+                                 aria-valuemax="100">
+                            </div>
+                        </div>
+                        <small class="text-muted">@Model.CompletionRate% completion rate</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Overdue Tasks Card -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="text-muted mb-1 small">Overdue Tasks</p>
+                            <h3 class="mb-0 fw-bold text-danger">@Model.OverdueTasks</h3>
+                        </div>
+                        <div class="rounded-circle bg-danger bg-opacity-10 p-3">
+                            <i class="bi bi-exclamation-triangle fs-4 text-danger"></i>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        @if (Model.OverdueTasks > 0)
+                        {
+                            <small class="text-danger">
+                                <i class="bi bi-exclamation-circle"></i> Needs attention
+                            </small>
+                        }
+                        else
+                        {
+                            <small class="text-success">
+                                <i class="bi bi-check-circle"></i> All caught up!
+                            </small>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional Info Row -->
+    <div class="row g-4">
+        <!-- Quick Stats -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="mb-0">
+                        <i class="bi bi-calendar-event"></i> Upcoming Deadlines
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                        <div>
+                            <p class="mb-0 fw-semibold">Due Today</p>
+                            <small class="text-muted">Tasks that need attention today</small>
+                        </div>
+                        <span class="badge bg-info rounded-pill fs-6">@Model.TasksDueToday</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="mb-0 fw-semibold">Due This Week</p>
+                            <small class="text-muted">Tasks due in the next 7 days</small>
+                        </div>
+                        <span class="badge bg-primary rounded-pill fs-6">@Model.TasksDueThisWeek</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="mb-0">
+                        <i class="bi bi-lightning"></i> Quick Actions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a asp-controller="Task" asp-action="Create" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> Create New Task
+                        </a>
+                        <a asp-controller="Task" asp-action="Index" class="btn btn-outline-primary">
+                            <i class="bi bi-list-check"></i> View All Tasks
+                        </a>
+                        @if (Model.OverdueTasks > 0)
+                        {
+                            <a asp-controller="Task" asp-action="Index" class="btn btn-outline-danger">
+                                <i class="bi bi-exclamation-triangle"></i> View Overdue Tasks (@Model.OverdueTasks)
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary Message -->
+    <div class="row mt-4">
+        <div class="col">
+            @{
+                string alertClass;
+                string iconClass;
+                string message;
+
+                if (Model.OverdueTasks > 0)
+                {
+                    alertClass = "alert-danger";
+                    iconClass = "bi-exclamation-triangle";
+                    message = $"Attention needed! You have {Model.OverdueTasks} overdue task(s). Consider prioritizing them today.";
+                }
+                else if (Model.PendingTasks > 0)
+                {
+                    alertClass = "alert-warning";
+                    iconClass = "bi-clock-history";
+                    message = $"Keep it up! You have {Model.PendingTasks} pending task(s) to complete.";
+                }
+                else if (Model.TotalTasks > 0)
+                {
+                    alertClass = "alert-success";
+                    iconClass = "bi-check-circle";
+                    message = "Great job! All your tasks are completed. Time to relax or create new ones!";
+                }
+                else
+                {
+                    alertClass = "alert-info";
+                    iconClass = "bi-info-circle";
+                    message = "Welcome! Start by creating your first task to get organized.";
+                }
+            }
+
+            <div class="alert @alertClass border-0 shadow-sm">
+                <i class="bi @iconClass"></i>
+                <strong>@message</strong>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+
+            .card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+            }
+
+        .bi {
+            vertical-align: middle;
+        }
+    </style>
+}

@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.EntityFrameworkCore;
 using TaskManagementSystem.Data;
 using TaskManagementSystem.Models;
 using TaskManagementSystem.Repositories.Interfaces;
 
-namespace TaskManagementSystem.Repositories
+namespace TaskManagementSystem.Repositories.Implementation
 {
     public class TaskRepository : ITaskRepository
     {
@@ -17,70 +15,67 @@ namespace TaskManagementSystem.Repositories
         }
 
 
+        // ========================================
+        // EXISTING METHODS (keep as-is)
+        // ========================================
 
-
-        public TaskEntity? GetById(int id)
+        public async Task<IEnumerable<TaskEntity>> GetAll()
         {
-            return _context.Tasks.Find(id);
+            return await _context.Tasks.ToListAsync();
         }
 
-
-
-
-        public IEnumerable<TaskEntity> GetAll()
+        public async Task<TaskEntity?> GetById(int id)
         {
-            return _context.Tasks
-                .OrderByDescending(t => t.CreatedAt)
-                .ToList();
+            return await _context.Tasks.FindAsync(id);
         }
 
-
-
-
-
-
-        public void Create(TaskEntity task)
+        public async Task Create(TaskEntity task)
         {
-            task.CreatedAt = DateTime.Now;
-            task.UpdatedAt = DateTime.Now;
-
-            _context.Tasks.Add(task);
+            await _context.Tasks.AddAsync(task);
         }
 
-
-
-
-
-
-        public void Update(TaskEntity task)
+        public async Task Update(TaskEntity task)
         {
-            task.UpdatedAt = DateTime.Now;
             _context.Tasks.Update(task);
         }
 
-
-
-
-
-
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
-            var task = _context.Tasks.Find(id);
+            var task = await GetById(id);
             if (task != null)
             {
                 _context.Tasks.Remove(task);
             }
         }
 
-
-
-
-
-
-
-        public void Save()
+        public async Task Save()
         {
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
+        }
+
+        // ========================================
+        // NEW METHODS FOR DASHBOARD
+        // ========================================
+
+        public async Task<IEnumerable<TaskEntity>> GetAllTasksAsync()
+        {
+            return await _context.Tasks
+                .AsNoTracking()
+                .OrderByDescending(t => t.CreatedAt)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<TaskEntity>> GetTasksByUserIdAsync(string userId)
+        {
+            // OPTION 1: If TaskEntity has CreatedByUserId property
+            return await _context.Tasks
+                .AsNoTracking()
+                .Where(t => t.CreatedByUserId == userId)
+                .OrderByDescending(t => t.CreatedAt)
+                .ToListAsync();
+
+            // OPTION 2: If tasks are shared (no user filter)
+            // return await GetAllTasksAsync();
         }
     }
 }

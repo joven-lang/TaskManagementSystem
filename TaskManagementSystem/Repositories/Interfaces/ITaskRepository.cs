@@ -1,15 +1,19 @@
-﻿
-using TaskManagementSystem.Models;
+﻿using TaskManagementSystem.Models;
 
 namespace TaskManagementSystem.Repositories.Interfaces
 {
     public interface ITaskRepository
     {
-        TaskEntity? GetById(int id);
-        IEnumerable<TaskEntity> GetAll();
-        void Create(TaskEntity task);
-        void Update(TaskEntity task);
-        void Delete(int id);
-        void Save();
+        // Existing methods
+        Task<IEnumerable<TaskEntity>> GetAll();
+        Task<TaskEntity?> GetById(int id);
+        Task Create(TaskEntity task);
+        Task Update(TaskEntity task);
+        Task Delete(int id);
+        Task Save();
+
+        // New methods for Dashboard
+        Task<IEnumerable<TaskEntity>> GetAllTasksAsync();
+        Task<IEnumerable<TaskEntity>> GetTasksByUserIdAsync(string userId);
     }
 }

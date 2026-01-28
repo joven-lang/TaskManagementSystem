@@ -9,6 +9,7 @@ namespace TaskManagementSystem.DTOs
         public string? Description { get; set; }
         public string Status { get; set; } = null!;
         public string Priority { get; set; } = null!;
+        public int OrderByNumber { get; set; }
         public DateTime? DueDate { get; set; }
     }
 }

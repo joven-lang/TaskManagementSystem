@@ -10,26 +10,25 @@ namespace TaskManagementSystem.Models
         public int Id { get; set; }
 
         [Required]
-        [StringLength(200)]
-        public string Title { get; set; } = string.Empty;
+        [MaxLength(200)]
+        public string? Title { get; set; }
 
-        public string? Description { get; set; }
+        public string? Description { get; set; }  // Make nullable if optional
 
         [Required]
-        public string Status { get; set; } = "Pending";
+        public string? Status { get; set; }
 
-        public int Priority { get; set; }
+        public int Priority { get; set; }  // Make nullable if optional
 
-        public DateTime? DueDate { get; set; }
+        public DateTime? DueDate { get; set; }  // Nullable DateTime
 
         public DateTime CreatedAt { get; set; }
 
+        public string? CreatedByUserId { get; set; }  // For user relationship
         public DateTime UpdatedAt { get; set; }
+        public string? UserId { get; set; }
 
-        // NEW: Add user tracking
-        public string? CreatedByUserId { get; set; }
-
-        [ForeignKey("CreatedByUserId")]
-        public virtual ApplicationUser? CreatedBy { get; set; }
+        // Navigation property (optional)
+        public ApplicationUser? User { get; set; }
     }
 }

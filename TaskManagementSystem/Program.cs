@@ -4,13 +4,17 @@ using TaskManagementSystem.Data;
 using TaskManagementSystem.Models;
 using TaskManagementSystem.Repositories;
 using TaskManagementSystem.Repositories.Interfaces;
+using TaskManagementSystem.Repositories.Implementation;
 using TaskManagementSystem.Services.Implementation;
 using TaskManagementSystem.Services.Interfaces;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+
 
 // Configure DbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -52,6 +56,24 @@ builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 // Register services
 builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+
+// Add this with your other service registrations
+builder.Services.AddScoped<IDashboardService, DashboardService>(); 
+
+// ... existing code ...
+
+// Add DbContext
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Register repositories
+builder.Services.AddScoped<ITaskRepository, TaskRepository>();
+
+// Register services
+builder.Services.AddScoped<ITaskService, TaskService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>(); // ADD THIS LINE
+
+// ... rest of your code ...
 
 var app = builder.Build();
 

@@ -18,19 +18,14 @@ namespace TaskManagementSystem.Services.Implementation
             _taskRepository = taskRepository;
         }
 
-
-
-
-
-        public Task<IEnumerable<TaskViewModel>> GetAllTasksAsync()
+        public async Task<IEnumerable<TaskViewModel>> GetAllTasksAsync()
         {
-            var tasks = _taskRepository.GetAll();
-
+            var tasks = await _taskRepository.GetAll(); // Add await
             var viewModels = tasks.Select(t => new TaskViewModel
             {
                 Id = t.Id,
                 Title = t.Title,
-                Description = t.Description, 
+                Description = t.Description,
                 Status = t.Status,
                 Priority = t.Priority,
                 DueDate = t.DueDate,
@@ -38,17 +33,15 @@ namespace TaskManagementSystem.Services.Implementation
                 UpdatedAt = t.UpdatedAt
             });
 
-            return Task.FromResult(viewModels);
+            return viewModels;
         }
 
-        public Task<TaskViewModel?> GetTaskByIdAsync(int id)
+        public async Task<TaskViewModel?> GetTaskByIdAsync(int id)
         {
-            var task = _taskRepository.GetById(id);
-
-
+            var task = await _taskRepository.GetById(id); // Add await
 
             if (task == null)
-                return Task.FromResult<TaskViewModel?>(null);
+                return null;
 
             var viewModel = new TaskViewModel
             {
@@ -62,10 +55,10 @@ namespace TaskManagementSystem.Services.Implementation
                 UpdatedAt = task.UpdatedAt
             };
 
-            return Task.FromResult<TaskViewModel?>(viewModel);
+            return viewModel;
         }
 
-        public Task CreateTaskAsync(TaskCreateViewModel model, string? userId = null)
+        public async Task CreateTaskAsync(TaskCreateViewModel model, string? userId = null)
         {
             var task = new TaskEntity
             {
@@ -74,24 +67,19 @@ namespace TaskManagementSystem.Services.Implementation
                 Status = "Pending",
                 Priority = model.Priority,
                 DueDate = model.DueDate,
-                CreatedByUserId = userId // Track who created it
+                CreatedByUserId = userId
             };
 
-            _taskRepository.Create(task);
-            _taskRepository.Save();
-
-            return Task.CompletedTask;
+            await _taskRepository.Create(task); // Add await if Create is async
+            await _taskRepository.Save(); // Add await
         }
 
-
-
-        public Task<bool> UpdateTaskAsync(int id, TaskViewModel model)
+        public async Task<bool> UpdateTaskAsync(int id, TaskViewModel model)
         {
-            var task = _taskRepository.GetById(id);
-
+            var task = await _taskRepository.GetById(id); // Add await
 
             if (task == null)
-                return Task.FromResult(false);
+                return false;
 
             task.Title = model.Title;
             task.Description = model.Description;
@@ -99,22 +87,23 @@ namespace TaskManagementSystem.Services.Implementation
             task.Priority = model.Priority;
             task.DueDate = model.DueDate;
 
-            _taskRepository.Update(task);
-            _taskRepository.Save();
+            await _taskRepository.Update(task); // Add await if Update is async
+            await _taskRepository.Save(); // Add await
 
-            return Task.FromResult(true);
+            return true;
         }
 
-        public Task<bool> DeleteTaskAsync(int id)
+        public async Task<bool> DeleteTaskAsync(int id)
         {
-            var task = _taskRepository.GetById(id);
+            var task = await _taskRepository.GetById(id); // Add await
+
             if (task == null)
-                return Task.FromResult(false);
+                return false;
 
-            _taskRepository.Delete(id);
-            _taskRepository.Save();
+            await _taskRepository.Delete(id); // Add await if Delete is async
+            await _taskRepository.Save(); // Add await
 
-            return Task.FromResult(true);
+            return true;
         }
     }
 }
