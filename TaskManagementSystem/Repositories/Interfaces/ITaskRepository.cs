@@ -12,8 +12,21 @@ namespace TaskManagementSystem.Repositories.Interfaces
         Task Delete(int id);
         Task Save();
 
-        // New methods for Dashboard
+        // Dashboard methods
         Task<IEnumerable<TaskEntity>> GetAllTasksAsync();
         Task<IEnumerable<TaskEntity>> GetTasksByUserIdAsync(string userId);
+
+        // Sorting only (legacy - kept for backward compatibility)
+        Task<IEnumerable<TaskEntity>> GetAllSortedAsync(string sortField, string sortOrder);
+
+        // Complete method with filtering, sorting, and pagination
+        Task<(IEnumerable<TaskEntity> Tasks, int TotalCount)> GetAllFilteredSortedPagedAsync(
+            string sortField,
+            string sortOrder,
+            int page,
+            int pageSize,
+            string? statusFilter,
+            string? priorityFilter,
+            string? searchTerm);
     }
 }

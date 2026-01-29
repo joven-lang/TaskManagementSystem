@@ -4,10 +4,9 @@ using System.Security.Claims;
 using TaskManagementSystem.Services.Interfaces;
 using TaskManagementSystem.ViewModels;
 
-
 namespace TaskManagementSystem.Controllers
 {
-    [Authorize] // Require authentication for all actions
+    [Authorize]
     public class TaskController : Controller
     {
         private readonly ITaskService _taskService;
@@ -17,48 +16,67 @@ namespace TaskManagementSystem.Controllers
             _taskService = taskService;
         }
 
-
-
-
-
-
-
         // GET: Task
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(
+            string sortField = "CreatedAt",
+            string sortOrder = "desc",
+            int page = 1,
+            int pageSize = 10,
+            string? statusFilter = null,
+            string? priorityFilter = null,
+            string? searchTerm = null)
         {
-            var tasks = await _taskService.GetAllTasksAsync();
+            // Validate sort parameters
+            var validSortFields = new[] { "Title", "Status", "Priority", "DueDate", "CreatedAt" };
+            var validSortOrders = new[] { "asc", "desc" };
+
+            if (!validSortFields.Contains(sortField))
+                sortField = "CreatedAt";
+
+            if (!validSortOrders.Contains(sortOrder))
+                sortOrder = "desc";
+
+            // Validate pagination
+            if (page < 1) page = 1;
+            if (pageSize < 1 || pageSize > 100) pageSize = 10;
+
+            // Get filtered, sorted, and paginated tasks
+            var result = await _taskService.GetAllTasksAsync(
+                sortField,
+                sortOrder,
+                page,
+                pageSize,
+                statusFilter,
+                priorityFilter,
+                searchTerm
+            );
+
             var viewModel = new TaskListViewModel
             {
-                Tasks = tasks.ToList()
+                Tasks = result.Tasks.ToList(),
+                CurrentSortField = sortField,
+                CurrentSortOrder = sortOrder,
+                CurrentPage = page,
+                PageSize = pageSize,
+                TotalItems = result.TotalCount,
+                StatusFilter = statusFilter,
+                PriorityFilter = priorityFilter,
+                SearchTerm = searchTerm
             };
+
             return View(viewModel);
         }
-
-
-
-
-
-
-
-
 
         // GET: Task/Details/5
         public async Task<IActionResult> Details(int id)
         {
             var task = await _taskService.GetTaskByIdAsync(id);
             if (task == null)
-            { 
+            {
                 return NotFound();
             }
             return View(task);
         }
-
-
-
-
-
-
-
 
         // GET: Task/Create
         public IActionResult Create()
@@ -72,20 +90,19 @@ namespace TaskManagementSystem.Controllers
         public async Task<IActionResult> Create(TaskCreateViewModel model)
         {
             if (!ModelState.IsValid)
-            {       
+            {
                 return View(model);
             }
 
-            // Get current user ID
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
             await _taskService.CreateTaskAsync(model, userId);
+
             TempData["SuccessMessage"] = "Task created successfully!";
             return RedirectToAction(nameof(Index));
         }
 
         // GET: Task/Edit/5
-        [Authorize(Roles = "Admin")] // Only Admin can edit
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id)
         {
             var task = await _taskService.GetTaskByIdAsync(id);
@@ -98,13 +115,8 @@ namespace TaskManagementSystem.Controllers
 
         // POST: Task/Edit/5
         [HttpPost]
-
-
-
-
-
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")] // Only Admin can edit
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, TaskViewModel model)
         {
             if (id != model.Id)
@@ -118,11 +130,6 @@ namespace TaskManagementSystem.Controllers
             }
 
             var result = await _taskService.UpdateTaskAsync(id, model);
-
-
-
-
-
             if (!result)
             {
                 return NotFound();
@@ -133,7 +140,7 @@ namespace TaskManagementSystem.Controllers
         }
 
         // GET: Task/Delete/5
-        [Authorize(Roles = "Admin")] // Only Admin can delete
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var task = await _taskService.GetTaskByIdAsync(id);
@@ -147,7 +154,7 @@ namespace TaskManagementSystem.Controllers
         // POST: Task/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")] // Only Admin can delete
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var result = await _taskService.DeleteTaskAsync(id);

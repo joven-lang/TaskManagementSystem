@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using TaskManagementSystem.Models;
+﻿using TaskManagementSystem.Models;
 using TaskManagementSystem.Repositories.Interfaces;
 using TaskManagementSystem.Services.Interfaces;
 using TaskManagementSystem.ViewModels;
@@ -18,44 +14,57 @@ namespace TaskManagementSystem.Services.Implementation
             _taskRepository = taskRepository;
         }
 
-        public async Task<IEnumerable<TaskViewModel>> GetAllTasksAsync()
+        public async Task<(IEnumerable<TaskViewModel> Tasks, int TotalCount)> GetAllTasksAsync(
+            string sortField = "CreatedAt",
+            string sortOrder = "desc",
+            int page = 1,
+            int pageSize = 10,
+            string? statusFilter = null,
+            string? priorityFilter = null,
+            string? searchTerm = null)
         {
-            var tasks = await _taskRepository.GetAll(); // Add await
-            var viewModels = tasks.Select(t => new TaskViewModel
+            var result = await _taskRepository.GetAllFilteredSortedPagedAsync(
+                sortField,
+                sortOrder,
+                page,
+                pageSize,
+                statusFilter,
+                priorityFilter,
+                searchTerm
+            );
+
+            var taskViewModels = result.Tasks.Select(t => new TaskViewModel
             {
                 Id = t.Id,
-                Title = t.Title,
+                Title = t.Title ?? string.Empty,
                 Description = t.Description,
-                Status = t.Status,
+                Status = t.Status ?? string.Empty,
                 Priority = t.Priority,
                 DueDate = t.DueDate,
                 CreatedAt = t.CreatedAt,
                 UpdatedAt = t.UpdatedAt
             });
 
-            return viewModels;
+            return (taskViewModels, result.TotalCount);
         }
 
         public async Task<TaskViewModel?> GetTaskByIdAsync(int id)
         {
-            var task = await _taskRepository.GetById(id); // Add await
-
+            var task = await _taskRepository.GetById(id);
             if (task == null)
                 return null;
 
-            var viewModel = new TaskViewModel
+            return new TaskViewModel
             {
                 Id = task.Id,
-                Title = task.Title,
+                Title = task.Title ?? string.Empty,
                 Description = task.Description,
-                Status = task.Status,
+                Status = task.Status ?? string.Empty,
                 Priority = task.Priority,
                 DueDate = task.DueDate,
                 CreatedAt = task.CreatedAt,
                 UpdatedAt = task.UpdatedAt
             };
-
-            return viewModel;
         }
 
         public async Task CreateTaskAsync(TaskCreateViewModel model, string? userId = null)
@@ -64,20 +73,22 @@ namespace TaskManagementSystem.Services.Implementation
             {
                 Title = model.Title,
                 Description = model.Description,
-                Status = "Pending",
+                Status = model.Status,
                 Priority = model.Priority,
                 DueDate = model.DueDate,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
+                UserId = userId,
                 CreatedByUserId = userId
             };
 
-            await _taskRepository.Create(task); // Add await if Create is async
-            await _taskRepository.Save(); // Add await
+            await _taskRepository.Create(task);
+            await _taskRepository.Save();
         }
 
         public async Task<bool> UpdateTaskAsync(int id, TaskViewModel model)
         {
-            var task = await _taskRepository.GetById(id); // Add await
-
+            var task = await _taskRepository.GetById(id);
             if (task == null)
                 return false;
 
@@ -86,23 +97,21 @@ namespace TaskManagementSystem.Services.Implementation
             task.Status = model.Status;
             task.Priority = model.Priority;
             task.DueDate = model.DueDate;
+            task.UpdatedAt = DateTime.UtcNow;
 
-            await _taskRepository.Update(task); // Add await if Update is async
-            await _taskRepository.Save(); // Add await
-
+            await _taskRepository.Update(task);
+            await _taskRepository.Save();
             return true;
         }
 
         public async Task<bool> DeleteTaskAsync(int id)
         {
-            var task = await _taskRepository.GetById(id); // Add await
-
+            var task = await _taskRepository.GetById(id);
             if (task == null)
                 return false;
 
-            await _taskRepository.Delete(id); // Add await if Delete is async
-            await _taskRepository.Save(); // Add await
-
+            await _taskRepository.Delete(id);
+            await _taskRepository.Save();
             return true;
         }
     }

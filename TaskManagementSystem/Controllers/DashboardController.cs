@@ -38,7 +38,7 @@ namespace TaskManagementSystem.Controllers
             }
             catch (Exception ex)
             {
-              
+
                 _logger.LogError(ex, "Error loading dashboard");
                 TempData["Error"] = "An error occurred while loading the dashboard.";
                 return View(new ViewModels.DashboardViewModel());
@@ -62,3 +62,4 @@ namespace TaskManagementSystem.Controllers
         }
     }
 }
+
