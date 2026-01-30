@@ -29,3 +29,176 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+/* ===============================
+   THEME VARIABLES
+================================ */
+:root {
+    --bg-color: #ffffff;
+    --text-color: #212529;
+    --card-bg: #ffffff;
+    --border-color: #dee2e6;
+    --nav-bg: #ffffff;
+}
+
+body.dark-mode {
+    --bg-color: #121212;
+    --text-color: #f1f1f1;
+    --card-bg: #1e1e1e;
+    --border-color: #2c2c2c;
+    --nav-bg: #1e1e1e;
+}
+
+/* ===============================
+   GLOBAL STYLES
+================================ */
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.navbar {
+    background-color: var(--nav-bg) !important;
+}
+
+.card,
+.table,
+.dropdown-menu {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+}
+
+.border-top,
+.border-bottom {
+    border-color: var(--border-color) !important;
+}
+
+a,
+.nav-link {
+    color: var(--text-color);
+}
+
+    a:hover {
+        opacity: 0.85;
+    }
+/* ===============================
+   TABLES (Dark Mode Friendly)
+================================ */
+.table {
+    color: var(--text-color);
+    border-color: var(--border-color);
+}
+
+    .table thead {
+        background-color: var(--nav-bg);
+        color: var(--text-color);
+    }
+
+    .table th,
+    .table td {
+        border-color: var(--border-color);
+    }
+
+body.dark-mode .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: #1a1a1a;
+}
+
+body.dark-mode .table-hover tbody tr:hover {
+    background-color: #2a2a2a;
+}
+
+/* Empty / muted text */
+.table .text-muted {
+    color: #b0b0b0 !important;
+}
+
+/* ===============================
+   FORMS (Dark Mode Friendly)
+================================ */
+.form-control,
+.form-select {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border-color: var(--border-color);
+}
+
+    .form-control::placeholder {
+        color: #9ca3af;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        background-color: var(--card-bg);
+        color: var(--text-color);
+        border-color: #0d6efd;
+        box-shadow: none;
+    }
+
+body.dark-mode .form-control:disabled,
+body.dark-mode .form-select:disabled {
+    background-color: #2a2a2a;
+    color: #9ca3af;
+}
+/* ===============================
+   CHECKBOX & RADIO
+================================ */
+.form-check-input {
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+}
+
+    .form-check-input:checked {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+    }
+/* ===============================
+   BUTTONS
+================================ */
+body.dark-mode .btn-outline-secondary {
+    color: #f1f1f1;
+    border-color: #6c757d;
+}
+
+    body.dark-mode .btn-outline-secondary:hover {
+        background-color: #6c757d;
+        color: #fff;
+    }
+/* ===============================
+   DISABLED INPUTS
+================================ */
+.form-control:disabled,
+.form-select:disabled,
+textarea:disabled {
+    background-color: #2a2a2a;
+    color: #9ca3af;
+    border-color: var(--border-color);
+    opacity: 1;
+    cursor: not-allowed;
+}
+
+body:not(.dark-mode) .form-control:disabled,
+body:not(.dark-mode) .form-select:disabled {
+    background-color: #e9ecef;
+    color: #6c757d;
+}
+/* ===============================
+   FORM INPUTS WITH ICONS
+================================ */
+.input-group-text {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border-color: var(--border-color);
+}
+
+body.dark-mode .input-group-text {
+    background-color: #1f1f1f;
+}
+
+.input-group .form-control {
+    border-left: none;
+}
+
+    .input-group .form-control:focus {
+        box-shadow: none;
+    }

@@ -14,6 +14,7 @@ namespace TaskManagementSystem.Controllers
         public TaskController(ITaskService taskService)
         {
             _taskService = taskService;
+
         }
 
         // GET: Task
@@ -40,7 +41,7 @@ namespace TaskManagementSystem.Controllers
             if (page < 1) page = 1;
             if (pageSize < 1 || pageSize > 100) pageSize = 10;
 
-            // Get filtered, sorted, and paginated tasks
+            // Get filtered, sorted, and paginated tasks    
             var result = await _taskService.GetAllTasksAsync(
                 sortField,
                 sortOrder,
@@ -67,6 +68,9 @@ namespace TaskManagementSystem.Controllers
             return View(viewModel);
         }
 
+
+
+
         // GET: Task/Details/5
         public async Task<IActionResult> Details(int id)
         {
@@ -77,6 +81,9 @@ namespace TaskManagementSystem.Controllers
             }
             return View(task);
         }
+
+
+
 
         // GET: Task/Create
         public IActionResult Create()
