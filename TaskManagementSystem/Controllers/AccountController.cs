@@ -17,7 +17,7 @@ namespace TaskManagementSystem.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult Login(string? returnUrl = null)
+        public IActionResult Login(string? returnUrl = null)///method para ipakita ang Login page
         {
             ViewData["ReturnUrl"] = returnUrl;
             return View();
@@ -31,12 +31,12 @@ namespace TaskManagementSystem.Controllers
         {
             ViewData["ReturnUrl"] = returnUrl;
 
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid)///page na babalikan pagkatapos mag-login
             {
                 return View(model);
             }
 
-            var result = await _accountService.LoginAsync(model);
+            var result = await _accountService.LoginAsync(model);  ///i-check kung tama ang username at password             
 
             if (result)
             {
@@ -69,7 +69,7 @@ namespace TaskManagementSystem.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterViewModel model)
+        public async Task<IActionResult> Register(RegisterViewModel model)///tumatanggap ng impormasyon sa pag-register
         {
             if (!ModelState.IsValid)
             {
@@ -93,14 +93,14 @@ namespace TaskManagementSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
-            await _accountService.LogoutAsync();
+            await _accountService.LogoutAsync();///method na nagla-logout ng user
             return RedirectToAction("Login");
         }
 
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult AccessDenied()
+        public IActionResult AccessDenied()///method na nagpapakita ng Access Denied page
         {
             return View();
         }

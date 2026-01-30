@@ -1,0 +1,381 @@
+﻿@{
+    ViewData["Title"] = "Calendar View";
+}
+
+<div class="row mb-3">
+    <div class="col">
+        <h2><i class="bi bi-calendar3"></i> Task Calendar</h2>
+    </div>
+    <div class="col text-end">
+        <a asp-controller="Task" asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Create Task
+        </a>
+        <a asp-controller="Task" asp-action="Index" class="btn btn-secondary">
+            <i class="bi bi-list-ul"></i> List View
+        </a>
+    </div>
+</div>
+
+<!-- Calendar Legend -->
+<div class="card mb-3">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+                <strong>Priority Legend:</strong>
+                <span class="badge ms-2" style="background-color: #dc3545;">
+                    <i class="bi bi-exclamation-triangle"></i> High Priority
+                </span>
+                <span class="badge ms-2" style="background-color: #ffc107; color: #000;">
+                    <i class="bi bi-exclamation-circle"></i> Medium Priority
+                </span>
+                <span class="badge ms-2" style="background-color: #6c757d;">
+                    <i class="bi bi-dash-circle"></i> Low Priority
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Calendar Container -->
+<div class="card">
+    <div class="card-body">
+        <div id="calendar"></div>
+    </div>
+</div>
+
+<!-- Task Details Modal -->
+<div class="modal fade" id="taskDetailsModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="taskModalTitle">Task Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="taskModalBody">
+                <div class="text-center">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <a href="#" id="viewTaskDetailsBtn" class="btn btn-info">
+                    <i class="bi bi-eye"></i> View Details
+                </a>
+                <a href="#" id="editTaskBtn" class="btn btn-warning">
+                    <i class="bi bi-pencil"></i> Edit
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* ============================================
+   STYLES SECTION - Lahat ng CSS dito lang
+   ============================================ *@
+@section Styles {
+    <!-- FullCalendar CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css" rel="stylesheet" />
+
+    <style>
+        #calendar {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        .fc {
+            font-family: inherit;
+        }
+
+        .fc-event {
+            cursor: pointer;
+            border-radius: 4px;
+            padding: 2px 4px;
+            font-size: 0.875rem;
+        }
+
+            .fc-event:hover {
+                opacity: 0.85;
+                transform: scale(1.02);
+                transition: all 0.2s ease;
+            }
+
+        .fc-daygrid-event {
+            white-space: normal;
+            align-items: flex-start;
+        }
+
+        .fc-toolbar-title {
+            font-size: 1.5rem !important;
+            font-weight: 600;
+        }
+
+        .fc-button {
+            text-transform: capitalize !important;
+        }
+
+        .fc-col-header-cell {
+            background-color: var(--bg-secondary);
+            font-weight: 600;
+        }
+
+        .fc-day-today {
+            background-color: rgba(13, 110, 253, 0.1) !important;
+        }
+
+        [data-theme="dark"] .fc {
+            --fc-border-color: var(--border-color);
+            --fc-page-bg-color: var(--bg-primary);
+            --fc-neutral-bg-color: var(--bg-secondary);
+        }
+
+        [data-theme="dark"] .fc-theme-standard td,
+        [data-theme="dark"] .fc-theme-standard th {
+            border-color: var(--border-color);
+        }
+
+        [data-theme="dark"] .fc-col-header-cell {
+            background-color: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        [data-theme="dark"] .fc-daygrid-day-number {
+            color: var(--text-primary);
+        }
+
+        [data-theme="dark"] .fc-button {
+            background-color: var(--btn-primary-bg);
+            border-color: var(--btn-primary-bg);
+        }
+
+        .calendar-loading {
+            position: relative;
+        }
+
+            .calendar-loading::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.1);
+                z-index: 999;
+            }
+    </style>
+}
+
+@* ============================================
+   SCRIPTS SECTION - Lahat ng JavaScript dito lang
+   ============================================ *@
+@section Scripts {
+    <!-- FullCalendar JS -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var taskDetailsModal = new bootstrap.Modal(document.getElementById('taskDetailsModal'));
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+                },
+
+                editable: true,
+                droppable: true,
+                displayEventTime: false,
+                eventDisplay: 'block',
+
+                events: function(info, successCallback, failureCallback) {
+                    fetch('@Url.Action("GetEvents", "Calendar")?start=' + info.startStr + '&end=' + info.endStr)
+                        .then(response => response.json())
+                        .then(data => {
+                            successCallback(data);
+                        })
+                        .catch(error => {
+                            console.error('Error loading events:', error);
+                            failureCallback(error);
+                        });
+                },
+
+                eventClick: function(info) {
+                    info.jsEvent.preventDefault();
+                    showTaskDetails(info.event.id);
+                },
+
+                eventDrop: function(info) {
+                    updateTaskDate(info.event.id, info.event.start);
+                },
+
+                eventDidMount: function(info) {
+                    info.el.title = info.event.title +
+                                   '\nStatus: ' + info.event.extendedProps.status +
+                                   '\nPriority: ' + getPriorityText(info.event.extendedProps.priority);
+                },
+
+                loading: function(isLoading) {
+                    if (isLoading) {
+                        calendarEl.classList.add('calendar-loading');
+                    } else {
+                        calendarEl.classList.remove('calendar-loading');
+                    }
+                }
+            });
+
+            calendar.render();
+
+            function showTaskDetails(taskId) {
+                document.getElementById('taskModalBody').innerHTML = `
+                    <div class="text-center">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                `;
+
+                taskDetailsModal.show();
+
+                fetch('@Url.Action("GetTaskDetails", "Calendar")/' + taskId)
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('taskModalTitle').textContent = data.title;
+                        document.getElementById('taskModalBody').innerHTML = `
+                            <div class="task-details">
+                                <div class="mb-3">
+                                    <strong>Status:</strong>
+                                    <span class="badge ${getStatusBadgeClass(data.status)}">${data.status}</span>
+                                </div>
+                                <div class="mb-3">
+                                    <strong>Priority:</strong>
+                                    <span class="badge ${getPriorityBadgeClass(data.priority)}">${getPriorityText(data.priority)}</span>
+                                </div>
+                                ${data.dueDate ? `
+                                <div class="mb-3">
+                                    <strong>Due Date:</strong> ${formatDate(data.dueDate)}
+                                </div>
+                                ` : ''}
+                                <div class="mb-3">
+                                    <strong>Created:</strong> ${data.createdAt}
+                                </div>
+                                ${data.description ? `
+                                <div class="mb-3">
+                                    <strong>Description:</strong>
+                                    <p class="mt-2">${data.description}</p>
+                                </div>
+                                ` : ''}
+                            </div>
+                        `;
+
+                        document.getElementById('viewTaskDetailsBtn').href = data.detailsUrl;
+                        document.getElementById('editTaskBtn').href = data.editUrl;
+                    })
+                    .catch(error => {
+                        console.error('Error loading task details:', error);
+                        document.getElementById('taskModalBody').innerHTML = `
+                            <div class="alert alert-danger">
+                                Failed to load task details. Please try again.
+                            </div>
+                        `;
+                    });
+            }
+
+            function updateTaskDate(taskId, newDate) {
+                fetch('@Url.Action("UpdateEventDate", "Calendar")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
+                    },
+                    body: JSON.stringify({
+                        id: parseInt(taskId),
+                        newDate: newDate.toISOString()
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showToast('Success', 'Task date updated successfully', 'success');
+                    } else {
+                        showToast('Error', data.message || 'Failed to update task date', 'danger');
+                        calendar.refetchEvents();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error updating task date:', error);
+                    showToast('Error', 'Failed to update task date', 'danger');
+                    calendar.refetchEvents();
+                });
+            }
+
+            function getPriorityText(priority) {
+                switch(priority) {
+                    case 1: return 'High';
+                    case 2: return 'Medium';
+                    case 3: return 'Low';
+                    default: return 'Unknown';
+                }
+            }
+
+            function getStatusBadgeClass(status) {
+                switch(status) {
+                    case 'Completed': return 'bg-success';
+                    case 'InProgress': return 'bg-primary';
+                    case 'Pending': return 'bg-warning';
+                    default: return 'bg-secondary';
+                }
+            }
+
+            function getPriorityBadgeClass(priority) {
+                switch(priority) {
+                    case 1: return 'bg-danger';
+                    case 2: return 'bg-warning text-dark';
+                    case 3: return 'bg-secondary';
+                    default: return 'bg-info';
+                }
+            }
+
+            function formatDate(dateString) {
+                const date = new Date(dateString);
+                return date.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+            }
+
+            function showToast(title, message, type) {
+                const toastHtml = `
+                    <div class="toast align-items-center text-white bg-${type} border-0" role="alert">
+                        <div class="d-flex">
+                            <div class="toast-body">
+                                <strong>${title}:</strong> ${message}
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                        </div>
+                    </div>
+                `;
+
+                let toastContainer = document.querySelector('.toast-container');
+                if (!toastContainer) {
+                    toastContainer = document.createElement('div');
+                    toastContainer.className = 'toast-container position-fixed top-0 end-0 p-3';
+                    document.body.appendChild(toastContainer);
+                }
+
+                toastContainer.insertAdjacentHTML('beforeend', toastHtml);
+                const toastElement = toastContainer.lastElementChild;
+                const toast = new bootstrap.Toast(toastElement);
+                toast.show();
+
+                toastElement.addEventListener('hidden.bs.toast', () => {
+                    toastElement.remove();
+                });
+            }
+        });
+    </script>
+}

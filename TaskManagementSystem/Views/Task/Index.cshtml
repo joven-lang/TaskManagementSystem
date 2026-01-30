@@ -317,3 +317,18 @@ else
         }
     </div>
 }
+
+<div class="row mb-3">
+    <div class="col">
+        <h2>Task List</h2>
+    </div>
+    <div class="col text-end">
+        <!-- ✅ NEW: Calendar View Button -->
+        <a asp-controller="Calendar" asp-action="Index" class="btn btn-info">
+            <i class="bi bi-calendar3"></i> Calendar View
+        </a>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Create New Task
+        </a>
+    </div>
+</div>
