@@ -8,13 +8,17 @@
         <h2>Task List</h2>
     </div>
     <div class="col text-end">
+        <!-- ✅ Calendar View Button --> <!-- NO CHANGE -->
+        <a asp-controller="Calendar" asp-action="Index" class="btn btn-info">
+            <i class="bi bi-calendar3"></i> Calendar View
+        </a>
         <a asp-action="Create" class="btn btn-primary">
             <i class="bi bi-plus-circle"></i> Create New Task
         </a>
     </div>
 </div>
 
-@if (TempData["SuccessMessage"] != null)
+@if (TempData["SuccessMessage"] != null) 
 {
     <div class="alert alert-success alert-dismissible fade show" role="alert">
         @TempData["SuccessMessage"]
@@ -22,7 +26,7 @@
     </div>
 }
 
-<!-- Filtering, Sorting, and Search Controls -->
+<!-- Filtering, Sorting, and Search Controls --> <!-- NO CHANGE - ENTIRE SECTION -->
 <div class="card mb-3">
     <div class="card-body">
         <form method="get" asp-action="Index" id="filterForm">
@@ -137,6 +141,7 @@
                     <th>Priority</th>
                     <th>Due Date</th>
                     <th>Created At</th>
+                    <th>Created By</th> @* ADDED *@
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -144,9 +149,9 @@
                 @foreach (var task in Model.Tasks)
                 {
                     <tr>
-                        <td>@task.Title</td>
-                        <td>@(task.Description?.Length > 50 ? task.Description.Substring(0, 50) + "..." : task.Description)</td>
-                        <td>
+                        <td>@task.Title</td> @* NO CHANGE *@
+                        <td>@(task.Description?.Length > 50 ? task.Description.Substring(0, 50) + "..." : task.Description)</td> @* NO CHANGE *@
+                        <td> @* NO CHANGE *@
                             @if (task.Status == "Completed")
                             {
                                 <span class="badge bg-success">Completed</span>
@@ -160,7 +165,7 @@
                                 <span class="badge bg-warning">Pending</span>
                             }
                         </td>
-                        <td>
+                        <td> @* NO CHANGE *@
                             @if (task.Priority == 1)
                             {
                                 <span class="badge bg-danger">High</span>
@@ -174,9 +179,21 @@
                                 <span class="badge bg-secondary">Low</span>
                             }
                         </td>
-                        <td>@(task.DueDate?.ToString("MMM dd, yyyy") ?? "N/A")</td>
-                        <td>@task.CreatedAt.ToString("MMM dd, yyyy")</td>
-                        <td>
+                        <td>@(task.DueDate?.ToString("MMM dd, yyyy") ?? "N/A")</td> @* NO CHANGE *@
+                        <td>@task.CreatedAt.ToString("MMM dd, yyyy")</td> @* NO CHANGE *@
+                        <td> @* ADDED - Created By column *@
+                            @if (!string.IsNullOrEmpty(task.CreatedByEmail))
+                            {
+                                <span class="text-primary">
+                                    <i class="bi bi-person-circle"></i> @task.CreatedByEmail
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Unknown</span>
+                            }
+                        </td>
+                        <td> @* NO CHANGE *@
                             <a asp-action="Details" asp-route-id="@task.Id" class="btn btn-sm btn-info">
                                 <i class="bi bi-eye"></i>
                             </a>
@@ -196,7 +213,7 @@
         </table>
     </div>
 
-    <!-- Pagination -->
+    <!-- Pagination --> <!-- NO CHANGE - ENTIRE PAGINATION SECTION STAYS THE SAME -->
     @if (Model.TotalPages > 1)
     {
         <nav aria-label="Task pagination">
@@ -317,18 +334,3 @@ else
         }
     </div>
 }
-
-<div class="row mb-3">
-    <div class="col">
-        <h2>Task List</h2>
-    </div>
-    <div class="col text-end">
-        <!-- ✅ NEW: Calendar View Button -->
-        <a asp-controller="Calendar" asp-action="Index" class="btn btn-info">
-            <i class="bi bi-calendar3"></i> Calendar View
-        </a>
-        <a asp-action="Create" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i> Create New Task
-        </a>
-    </div>
-</div>

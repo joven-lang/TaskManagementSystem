@@ -14,11 +14,9 @@ namespace TaskManagementSystem.Controllers
         public TaskController(ITaskService taskService)
         {
             _taskService = taskService;
-
         }
 
-        // GET: Task  kumukuha at nagpapakita ng listahan ng tasks
-
+        // GET: Task
         public async Task<IActionResult> Index(
             string sortField = "CreatedAt",
             string sortOrder = "desc",
@@ -29,7 +27,7 @@ namespace TaskManagementSystem.Controllers
             string? searchTerm = null)
         {
             // Validate sort parameters
-            var validSortFields = new[] { "Title", "Status", "Priority", "DueDate", "CreatedAt" };
+            var validSortFields = new[] { "Title", "Status", "Priority", "DueDate", "CreatedAt", "CreatedBy" }; // ADDED "CreatedBy"
             var validSortOrders = new[] { "asc", "desc" };
 
             if (!validSortFields.Contains(sortField))
@@ -69,13 +67,10 @@ namespace TaskManagementSystem.Controllers
             return View(viewModel);
         }
 
-
-
-
         // GET: Task/Details/5
         public async Task<IActionResult> Details(int id)
         {
-            var task = await _taskService.GetTaskByIdAsync(id); //Ang method na ito ay kumukuha ng task gamit ang ID,
+            var task = await _taskService.GetTaskByIdAsync(id);
 
             if (task == null)
             {
@@ -85,41 +80,36 @@ namespace TaskManagementSystem.Controllers
             return View(task);
         }
 
-
-
-
         // GET: Task/Create
         public IActionResult Create()
         {
             return View();
         }
 
-
-
         // POST: Task/Create
-        [HttpPost]  
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(TaskCreateViewModel model)
         {
-            if (!ModelState.IsValid) //chine-check kung invalid ang input ng user
+            if (!ModelState.IsValid)
             {
-                 return View(model);
+                return View(model);
             }
 
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);///(User ID) ng kasalukuyang naka-login
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            await _taskService.CreateTaskAsync(model, userId);///gumawa at mag-save ng bagong task
+            await _taskService.CreateTaskAsync(model, userId);
 
-            TempData["SuccessMessage"] = "Task created successfully!";///nag papakita ng message
+            TempData["SuccessMessage"] = "Task created successfully!";
 
             return RedirectToAction(nameof(Index));
         }
 
         // GET: Task/Edit/5
-        [Authorize(Roles = "Admin")]///admin lang ang pwedeng puumasok ditu
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id)
         {
-            var task = await _taskService.GetTaskByIdAsync(id);//nagahanap ng id
+            var task = await _taskService.GetTaskByIdAsync(id);
 
             if (task == null)
             {
@@ -131,21 +121,20 @@ namespace TaskManagementSystem.Controllers
         // POST: Task/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]//admin lang anag pwedeng maka acces
-
-        public async Task<IActionResult> Edit(int id, TaskViewModel model)//method na ginagamit para baguhin ang task
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Edit(int id, TaskViewModel model)
         {
-            if (id != model.Id)//chine-check kung magkaiba ang ID sa URL at ID sa model.
+            if (id != model.Id)
             {
                 return BadRequest();
             }
 
-            if (!ModelState.IsValid)//chine-check kung may mali o kulang sa input ng user.
+            if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            var result = await _taskService.UpdateTaskAsync(id, model);//Ina-update ng code na ito ang task na may ID gamit ang bagong data mula sa model.
+            var result = await _taskService.UpdateTaskAsync(id, model);
             if (!result)
             {
                 return NotFound();
@@ -156,9 +145,8 @@ namespace TaskManagementSystem.Controllers
         }
 
         // GET: Task/Delete/5
-        [Authorize(Roles = "Admin")]//admin lang ang pwedeng maka acces
-
-        public async Task<IActionResult> Delete(int id)///method na ginagamit para ipakita ang task na tatanggalin
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Delete(int id)
         {
             var task = await _taskService.GetTaskByIdAsync(id);
             if (task == null)
@@ -170,9 +158,9 @@ namespace TaskManagementSystem.Controllers
 
         // POST: Task/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]///Admin lang ang puwedeng mag-delete,
+        [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteConfirmed(int id)///method na tuluyang nagtatanggal ng task
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var result = await _taskService.DeleteTaskAsync(id);
             if (!result)

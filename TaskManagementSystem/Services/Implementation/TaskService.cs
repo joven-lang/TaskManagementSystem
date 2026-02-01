@@ -42,13 +42,15 @@ namespace TaskManagementSystem.Services.Implementation
                 Priority = t.Priority,
                 DueDate = t.DueDate,
                 CreatedAt = t.CreatedAt,
-                UpdatedAt = t.UpdatedAt
+                UpdatedAt = t.UpdatedAt,
+                // ADDED - Map CreatedBy email
+                CreatedByEmail = t.User?.Email
             });
 
             return (taskViewModels, result.TotalCount);
         }
 
-        public async Task<TaskViewModel?> GetTaskByIdAsync(int id)
+        public async Task<TaskViewModel?> GetTaskByIdAsync(int id) // NO CHANGE
         {
             var task = await _taskRepository.GetById(id);
             if (task == null)
@@ -63,11 +65,13 @@ namespace TaskManagementSystem.Services.Implementation
                 Priority = task.Priority,
                 DueDate = task.DueDate,
                 CreatedAt = task.CreatedAt,
-                UpdatedAt = task.UpdatedAt
+                UpdatedAt = task.UpdatedAt,
+                // ADDED - Map CreatedBy email
+                CreatedByEmail = task.User?.Email
             };
         }
 
-        public async Task CreateTaskAsync(TaskCreateViewModel model, string? userId = null)
+        public async Task CreateTaskAsync(TaskCreateViewModel model, string? userId = null) // NO CHANGE
         {
             var task = new TaskEntity
             {
@@ -86,7 +90,7 @@ namespace TaskManagementSystem.Services.Implementation
             await _taskRepository.Save();
         }
 
-        public async Task<bool> UpdateTaskAsync(int id, TaskViewModel model)
+        public async Task<bool> UpdateTaskAsync(int id, TaskViewModel model) // NO CHANGE
         {
             var task = await _taskRepository.GetById(id);
             if (task == null)
@@ -104,7 +108,7 @@ namespace TaskManagementSystem.Services.Implementation
             return true;
         }
 
-        public async Task<bool> DeleteTaskAsync(int id)
+        public async Task<bool> DeleteTaskAsync(int id) // NO CHANGE
         {
             var task = await _taskRepository.GetById(id);
             if (task == null)

@@ -13,28 +13,31 @@ namespace TaskManagementSystem.Repositories.Implementation
             _context = context;
         }
 
-        public async Task<IEnumerable<TaskEntity>> GetAll()
+        public async Task<IEnumerable<TaskEntity>> GetAll() // NO CHANGE
         {
             return await _context.Tasks.ToListAsync();
         }
 
-        public async Task<TaskEntity?> GetById(int id)
+        public async Task<TaskEntity?> GetById(int id) // NO CHANGE - BUT ADDED Include
         {
-            return await _context.Tasks.FindAsync(id);
+            // ADDED - Include User to get email
+            return await _context.Tasks
+                .Include(t => t.User)
+                .FirstOrDefaultAsync(t => t.Id == id);
         }
 
-        public async Task Create(TaskEntity task)
+        public async Task Create(TaskEntity task) // NO CHANGE
         {
             await _context.Tasks.AddAsync(task);
         }
 
-        public async Task Update(TaskEntity task)
+        public async Task Update(TaskEntity task) // NO CHANGE
         {
             _context.Tasks.Update(task);
             await Task.CompletedTask;
         }
 
-        public async Task Delete(int id)
+        public async Task Delete(int id) // NO CHANGE
         {
             var task = await GetById(id);
             if (task != null)
@@ -43,24 +46,24 @@ namespace TaskManagementSystem.Repositories.Implementation
             }
         }
 
-        public async Task Save()
+        public async Task Save() // NO CHANGE
         {
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<TaskEntity>> GetAllTasksAsync()
+        public async Task<IEnumerable<TaskEntity>> GetAllTasksAsync() // NO CHANGE
         {
             return await _context.Tasks.ToListAsync();
         }
 
-        public async Task<IEnumerable<TaskEntity>> GetTasksByUserIdAsync(string userId)
+        public async Task<IEnumerable<TaskEntity>> GetTasksByUserIdAsync(string userId) // NO CHANGE
         {
             return await _context.Tasks
                 .Where(t => t.UserId == userId)
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<TaskEntity>> GetAllSortedAsync(string sortField, string sortOrder)
+        public async Task<IEnumerable<TaskEntity>> GetAllSortedAsync(string sortField, string sortOrder) // NO CHANGE
         {
             IQueryable<TaskEntity> query = _context.Tasks;
 
@@ -78,18 +81,19 @@ namespace TaskManagementSystem.Repositories.Implementation
             string? priorityFilter,
             string? searchTerm)
         {
-            IQueryable<TaskEntity> query = _context.Tasks;
+            // ADDED - Include User to get email
+            IQueryable<TaskEntity> query = _context.Tasks.Include(t => t.User);
 
-            // Apply filters
+            // Apply filters // NO CHANGE
             query = ApplyFilters(query, statusFilter, priorityFilter, searchTerm);
 
-            // Get total count AFTER filtering but BEFORE pagination
+            // Get total count AFTER filtering but BEFORE pagination // NO CHANGE
             var totalCount = await query.CountAsync();
 
-            // Apply sorting
+            // Apply sorting // NO CHANGE
             query = ApplySorting(query, sortField, sortOrder);
 
-            // Apply pagination
+            // Apply pagination // NO CHANGE
             query = query
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize);
@@ -99,7 +103,7 @@ namespace TaskManagementSystem.Repositories.Implementation
             return (tasks, totalCount);
         }
 
-        private IQueryable<TaskEntity> ApplyFilters(
+        private IQueryable<TaskEntity> ApplyFilters( // NO CHANGE
             IQueryable<TaskEntity> query,
             string? statusFilter,
             string? priorityFilter,
@@ -130,7 +134,7 @@ namespace TaskManagementSystem.Repositories.Implementation
             return query;
         }
 
-        private IQueryable<TaskEntity> ApplySorting(
+        private IQueryable<TaskEntity> ApplySorting( // NO CHANGE
             IQueryable<TaskEntity> query,
             string sortField,
             string sortOrder)
@@ -156,6 +160,10 @@ namespace TaskManagementSystem.Repositories.Implementation
                 "CreatedAt" => sortOrder == "asc"
                     ? query.OrderBy(t => t.CreatedAt)
                     : query.OrderByDescending(t => t.CreatedAt),
+
+                "CreatedBy" => sortOrder == "asc"
+       ? query.OrderBy(t => t.User != null ? t.User.Email : "")
+       : query.OrderByDescending(t => t.User != null ? t.User.Email : ""),
 
                 _ => query.OrderByDescending(t => t.CreatedAt)
             };
