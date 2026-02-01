@@ -103,7 +103,6 @@
 
                                     <li><hr class="dropdown-divider" /></li>
 
-                                    <!-- ✅ FIXED LOGOUT (IDENTITY + ANTIFORGERY) -->
                                     <li>
                                         <form asp-controller="Account" asp-action="Logout" method="post">
                                             @Html.AntiForgeryToken()
@@ -111,8 +110,6 @@
                                                 <i class="bi bi-box-arrow-right"></i> Logout
                                             </button>
                                         </form>
-
-                                      
                                     </li>
                                 </ul>
                             </li>
@@ -120,10 +117,10 @@
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">Register</a>
+                                <a class="nav-link" asp-controller="Account" asp-action="Register">Register</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" asp-area="Identity" asp-page="/Account/Login">Login</a>
+                                <a class="nav-link" asp-controller="Account" asp-action="Login">Login</a>
                             </li>
                         }
                     </ul>
