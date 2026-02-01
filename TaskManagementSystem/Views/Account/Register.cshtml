@@ -22,6 +22,19 @@
                         <label asp-for="Password" class="form-label"></label>
                         <input asp-for="Password" class="form-control" placeholder="Enter your password" />
                         <span asp-validation-for="Password" class="text-danger"></span>
+                        <div class="form-text">
+                            <small>
+                                <strong>Password must contain:</strong>
+                                <ul class="mb-0 mt-1" style="font-size: 0.875rem;">
+                                    <li>At least 6 characters</li>
+                                    <li>At least 1 uppercase letter (A-Z)</li>
+                                    <li>At least 1 lowercase letter (a-z)</li>
+                                    <li>At least 1 digit (0-9)</li>
+                                    <li>At least 1 special character (@@, #, $, !, etc.)</li>
+                                </ul>
+                                <strong class="text-success">Example:</strong> <span class="text-primary">Test@@123</span>
+                            </small>
+                        </div>
                     </div>
 
                     <div class="mb-3">
@@ -49,7 +62,3 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
-<div class="mb-3">
-    <label>Email</label>
-    <input type="email" class="form-control">
-</div>
