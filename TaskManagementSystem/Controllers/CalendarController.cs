@@ -19,7 +19,7 @@ namespace TaskManagementSystem.Controllers
         }
 
         // GET: Calendar
-        public IActionResult Index()
+        public IActionResult Index()                     ///binubuksan nito ang page at wala pang ginagawang ibang logic.
         {
             return View();
         }
@@ -28,11 +28,11 @@ namespace TaskManagementSystem.Controllers
         [HttpGet]
         // POST: Calendar/QuickCreate (AJAX)
         [HttpPost]
-        public async Task<IActionResult> QuickCreate([FromBody] QuickCreateTaskRequest request)
+        public async Task<IActionResult> QuickCreate([FromBody] QuickCreateTaskRequest request)///function na tumatanggap ng data at gumagawa ng task.
         {
             try
             {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);                                   ///kunin ang value ng impormasyon ng naka-login na user.
                 if (string.IsNullOrEmpty(userId))
                 {
                     return Unauthorized();
@@ -41,14 +41,14 @@ namespace TaskManagementSystem.Controllers
                 var taskViewModel = new TaskCreateViewModel
                 {
                     Title = request.Title,
-                    Description = request.Description ?? "",
+                    Description = request.Description ?? "",///lagayan ng data task
                     Status = "Pending",
                     Priority = request.Priority,
                     DueDate = request.DueDate
                 };
 
-                await _taskService.CreateTaskAsync(taskViewModel, userId);
-
+                await _taskService.CreateTaskAsync(taskViewModel, userId);///pag nakalog in kana inutusan ka na netong mag save para dun sa naka log in na user
+                   
                 return Json(new
                 {
                     success = true,
@@ -62,7 +62,7 @@ namespace TaskManagementSystem.Controllers
             }
         }
 
-        public class QuickCreateTaskRequest
+        public class QuickCreateTaskRequest///ipinapadala galing UI papunta sa server
         {
             public string Title { get; set; } = string.Empty;
             public string? Description { get; set; }
@@ -96,9 +96,9 @@ namespace TaskManagementSystem.Controllers
 
                 var events = result.Tasks
                     .Where(t => t.DueDate.HasValue)
-                    .Select(t => new CalendarEventViewModel
+                    .Select(t => new CalendarEventViewModel///Pinipili lang nito ang mga task na may deadline at ginagawang calendar events.
                     {
-                        Id = t.Id,
+                        Id = t.Id,///Nilalagyan ng event details
                         Title = t.Title,
                         Start = t.DueDate!.Value,
                         End = t.DueDate!.Value,
@@ -112,7 +112,7 @@ namespace TaskManagementSystem.Controllers
                         ExtendedProps = new Dictionary<string, object>
                         {
                             { "status", t.Status },
-                            { "priority", t.Priority },
+                            { "priority", t.Priority },//Link pappunta sa task
                             { "description", t.Description ?? "" }
                         }
                     })

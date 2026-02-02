@@ -14,7 +14,7 @@ namespace TaskManagementSystem.Controllers
         public IActionResult Privacy()///method na nagpapakita ng Privacy page
         {
             return View();
-        }
+        }   
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]///huwag i-save o i-cache ang page,
         public IActionResult Error()

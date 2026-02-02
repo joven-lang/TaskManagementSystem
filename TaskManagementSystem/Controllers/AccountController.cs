@@ -17,7 +17,7 @@ namespace TaskManagementSystem.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult Login(string? returnUrl = null)///method para ipakita ang Login page
+        public IActionResult Login(string? returnUrl = null)                                    ///method para ipakita ang Login page
         {
             ViewData["ReturnUrl"] = returnUrl;
             return View();
@@ -31,12 +31,12 @@ namespace TaskManagementSystem.Controllers
         {
             ViewData["ReturnUrl"] = returnUrl;
 
-            if (!ModelState.IsValid)///page na babalikan pagkatapos mag-login
+            if (!ModelState.IsValid)                                                         ///page na babalikan pagkatapos mag-login
             {
                 return View(model);
             }
 
-            var result = await _accountService.LoginAsync(model);  ///i-check kung tama ang username at password             
+            var result = await _accountService.LoginAsync(model);                            ///i-check kung tama ang username at password             
 
             if (result)
             {
@@ -58,7 +58,7 @@ namespace TaskManagementSystem.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult Register()
+        public IActionResult Register()                         ///Ipinapakita nito ang Register page (UI).
         {
             return View();
         }
@@ -78,6 +78,7 @@ namespace TaskManagementSystem.Controllers
 
             var result = await _accountService.RegisterAsync(model, "User");
 
+
             if (result)
             {
                 TempData["SuccessMessage"] = "Registration successful! Please login.";
@@ -93,14 +94,14 @@ namespace TaskManagementSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
-            await _accountService.LogoutAsync();///method na nagla-logout ng user
+            await _accountService.LogoutAsync();                          ///method na nagla-logout ng user
             return RedirectToAction("Login");
         }
 
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult AccessDenied()///method na nagpapakita ng Access Denied page
+        public IActionResult AccessDenied()                        ///method na nagpapakita ng Access Denied page
         {
             return View();
         }

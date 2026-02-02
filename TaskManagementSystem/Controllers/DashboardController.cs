@@ -25,7 +25,7 @@ namespace TaskManagementSystem.Controllers
 
             try
             {
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);///ID ng taong naka-login ngayon
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);///ID ng taong naka-login ngayon    
 
                 if (string.IsNullOrEmpty(userId))
                 {
@@ -45,7 +45,7 @@ namespace TaskManagementSystem.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")] 
         public async Task<IActionResult> AdminDashboard()///method na nagpapakita ng Admin Dashboard
         {
             try

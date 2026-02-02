@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TaskManagementSystem.DTOs
+namespace TaskManagementSystem.DTOs///lahat ng impormasyon tungkol sa isang task.
 {
     public class TaskDto
     {
