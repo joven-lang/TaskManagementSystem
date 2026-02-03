@@ -1,0 +1,69 @@
+﻿@model List<TaskManagementSystem.Models.NotificationEntity>
+@{
+    ViewData["Title"] = "Notifications";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-bell"></i> Notifications</h2>
+        @if (Model.Any(n => !n.IsRead))
+        {
+            <form asp-action="MarkAllAsRead" method="post">
+                <button type="submit" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-check-all"></i> Mark All as Read
+                </button>
+            </form>
+        }
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> No notifications yet.
+        </div>
+    }
+    else
+    {
+        <div class="list-group">
+            @foreach (var notification in Model)
+            {
+                <div class="list-group-item @(!notification.IsRead ? "list-group-item-primary" : "")">
+                    <div class="d-flex w-100 justify-content-between">
+                        <div>
+                            @if (notification.Type == "Overdue")
+                            {
+                                <span class="badge bg-danger me-2">Overdue</span>
+                            }
+                            else if (notification.Type == "DueToday")
+                            {
+                                <span class="badge bg-warning me-2">Due Today</span>
+                            }
+                            else if (notification.Type == "DueTomorrow")
+                            {
+                                <span class="badge bg-info me-2">Due Tomorrow</span>
+                            }
+                            <strong>@notification.Message</strong>
+                        </div>
+                        <small class="text-muted">@notification.CreatedAt.ToString("MMM dd, yyyy h:mm tt")</small>
+                    </div>
+                    @if (notification.Task != null)
+                    {
+                        <p class="mb-1 mt-2">
+                            <a asp-controller="Task" asp-action="Details" asp-route-id="@notification.TaskId" class="text-decoration-none">
+                                View Task: @notification.Task.Title
+                            </a>
+                        </p>
+                    }
+                    @if (!notification.IsRead)
+                    {
+                        <form asp-action="MarkAsRead" asp-route-id="@notification.Id" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-sm btn-outline-secondary mt-2">
+                                <i class="bi bi-check"></i> Mark as Read
+                            </button>
+                        </form>
+                    }
+                </div>
+            }
+        </div>
+    }
+</div>

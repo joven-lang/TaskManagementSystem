@@ -21,7 +21,7 @@
     </div>
 </div>
 
-<!-- ===== FILTERS (UNCHANGED LOGIC) ===== -->
+<!-- ===== FILTERS ===== -->
 <div class="card mb-3">
     <div class="card-body">
         <form method="get" asp-action="Index">
@@ -39,9 +39,14 @@
                     <select name="statusFilter" class="form-select">
                         @foreach (var s in Model.StatusOptions)
                         {
-                            <option value="@s.Key" selected="@(s.Key == Model.StatusFilter)">
-                                @s.Value
-                            </option>
+                            @if (s.Key == Model.StatusFilter)
+                            {
+                                <option value="@s.Key" selected>@s.Value</option>
+                            }
+                            else
+                            {
+                                <option value="@s.Key">@s.Value</option>
+                            }
                         }
                     </select>
                 </div>
@@ -50,9 +55,14 @@
                     <select name="priorityFilter" class="form-select">
                         @foreach (var p in Model.PriorityOptions)
                         {
-                            <option value="@p.Key" selected="@(p.Key == Model.PriorityFilter)">
-                                @p.Value
-                            </option>
+                            @if (p.Key == Model.PriorityFilter)
+                            {
+                                <option value="@p.Key" selected>@p.Value</option>
+                            }
+                            else
+                            {
+                                <option value="@p.Key">@p.Value</option>
+                            }
                         }
                     </select>
                 </div>
@@ -135,7 +145,6 @@
                             }
                         </td>
 
-                        <!-- ✅ DATE BACK -->
                         <td class="fw-semibold">
                             @(task.DueDate?.ToString("MMM dd, yyyy") ?? "—")
                             @if (isOverdue)

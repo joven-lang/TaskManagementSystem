@@ -6,17 +6,18 @@ using TaskManagementSystem.Repositories.Interfaces;
 using TaskManagementSystem.Repositories.Implementation;
 using TaskManagementSystem.Services.Implementation;
 using TaskManagementSystem.Services.Interfaces;
+using TaskManagementSystem.Services; // ADDED
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Add services to the container. // NO CHANGE
 builder.Services.AddControllersWithViews();
 
-// Configure DbContext
+// Configure DbContext // NO CHANGE
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Configure Identity
+// Configure Identity // NO CHANGE
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
     options.Password.RequireDigit = true;
@@ -31,7 +32,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 
-// Configure cookie settings
+// Configure cookie settings // NO CHANGE
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Account/Login";
@@ -41,17 +42,22 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.SlidingExpiration = true;
 });
 
-// Register repositories
+// Register repositories // NO CHANGE
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 
-// Register services
+// Register services // NO CHANGE
 builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 
+// ADDED - Register notification service and background service
+builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddHostedService<NotificationBackgroundService>();
+// END ADDED
+
 var app = builder.Build();
 
-// Seed roles and admin user
+// Seed roles and admin user // NO CHANGE
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -66,7 +72,7 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-// Configure the HTTP request pipeline.
+// Configure the HTTP request pipeline. // NO CHANGE
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -76,7 +82,6 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-
 app.UseAuthentication();
 app.UseAuthorization();
 
