@@ -4,18 +4,24 @@ namespace TaskManagementSystem.ViewModels
 {
     public class DashboardViewModel
     {
+        // ===== COUNTS =====
         public int TotalTasks { get; set; }
         public int PendingTasks { get; set; }
         public int CompletedTasks { get; set; }
         public int OverdueTasks { get; set; }
 
+        // ===== PROGRESS / INSIGHTS =====
         public decimal CompletionRate { get; set; }
         public int TasksDueToday { get; set; }
         public int TasksDueThisWeek { get; set; }
 
-        // ✅ IMPORTANT: para sa Recent Tasks table sa Dashboard
+        // ===== RECENT TASKS (Dashboard Table) =====
         public List<TaskEntity> RecentTasks { get; set; } = new();
 
+        // ===== 🤖 AI-STYLE SUGGESTIONS =====
+        public List<string> AiSuggestions { get; set; } = new();
+
+        // ===== CALCULATIONS =====
         public void CalculateCompletionRate()
         {
             if (TotalTasks > 0)

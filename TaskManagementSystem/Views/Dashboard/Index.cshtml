@@ -16,7 +16,8 @@
             <p class="dashboard-subtitle">Track your productivity and task progress</p>
         </div>
 
-        <a asp-controller="Task" asp-action="Create"
+        <a asp-controller="Task"
+           asp-action="Create"
            class="btn btn-primary btn-create">
             + Create Task
         </a>
@@ -67,6 +68,20 @@
 
     </div>
 
+    <!-- 🤖 AI SUGGESTIONS -->
+    @if (Model.AiSuggestions != null && Model.AiSuggestions.Any())
+    {
+        <div class="dashboard-card mb-4">
+            <h5 class="fw-semibold mb-2">🤖 AI Suggestions</h5>
+            <ul class="mb-0">
+                @foreach (var suggestion in Model.AiSuggestions)
+                {
+                    <li>@suggestion</li>
+                }
+            </ul>
+        </div>
+    }
+
     <!-- ===== CONTENT ===== -->
     <div class="row g-4">
 
@@ -97,11 +112,10 @@
                                         <td class="fw-semibold">@task.Title</td>
 
                                         <td>
-                                            <span class="badge @(task.Status == "Completed"
-                                                                                                  ? "badge-completed"
-                                                                                                  : task.Status == "Overdue"
-                                                                                                      ? "badge-overdue"
-                                                                                                      : "badge-pending")">
+                                            <span class="badge
+                                                        @(task.Status == "Completed" ? "badge-completed" :
+                                                                                                    task.Status == "Overdue" ? "badge-overdue" :
+                                                                                                    "badge-pending")">
                                                 @task.Status
                                             </span>
                                         </td>
@@ -136,7 +150,8 @@
                             else
                             {
                                 <tr>
-                                    <td colspan="4" class="text-center text-muted py-3">
+                                    <td colspan="4"
+                                        class="text-center text-muted py-3">
                                         No recent tasks found
                                     </td>
                                 </tr>
@@ -146,7 +161,8 @@
                 </div>
 
                 <div class="text-end p-3">
-                    <a asp-controller="Task" asp-action="Index"
+                    <a asp-controller="Task"
+                       asp-action="Index"
                        class="btn btn-outline-primary btn-sm">
                         View All Tasks
                     </a>

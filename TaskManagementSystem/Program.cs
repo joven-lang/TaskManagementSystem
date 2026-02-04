@@ -1,23 +1,30 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TaskManagementSystem.Models;
-using TaskManagementSystem.Repositories;
 using TaskManagementSystem.Repositories.Interfaces;
 using TaskManagementSystem.Repositories.Implementation;
-using TaskManagementSystem.Services.Implementation;
 using TaskManagementSystem.Services.Interfaces;
-using TaskManagementSystem.Services; // ADDED
+using TaskManagementSystem.Services.Implementation;
+using TaskManagementSystem.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container. // NO CHANGE
+// ================================
+// Add services to the container
+// ================================
 builder.Services.AddControllersWithViews();
 
-// Configure DbContext // NO CHANGE
+// ================================
+// Configure DbContext
+// ================================
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection")
+    ));
 
-// Configure Identity // NO CHANGE
+// ================================
+// Configure Identity
+// ================================
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
     options.Password.RequireDigit = true;
@@ -25,14 +32,18 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     options.Password.RequireUppercase = true;
     options.Password.RequireNonAlphanumeric = true;
     options.Password.RequiredLength = 6;
+
     options.User.RequireUniqueEmail = true;
+
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
     options.Lockout.MaxFailedAccessAttempts = 5;
 })
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 
-// Configure cookie settings // NO CHANGE
+// ================================
+// Configure Cookie
+// ================================
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Account/Login";
@@ -42,22 +53,34 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.SlidingExpiration = true;
 });
 
-// Register repositories // NO CHANGE
+// ================================
+// Register Repositories
+// ================================
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 
-// Register services // NO CHANGE
+// ================================
+// Register Core Services
+// ================================
 builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 
-// ADDED - Register notification service and background service
+// ================================
+// 🔔 Notification Services
+// ================================
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddHostedService<NotificationBackgroundService>();
-// END ADDED
+
+// ================================
+// 🤖 AI Suggestion Service (ADDED)
+// ================================
+builder.Services.AddScoped<IAiSuggestionService, AiSuggestionService>();
 
 var app = builder.Build();
 
-// Seed roles and admin user // NO CHANGE
+// ================================
+// Seed Roles & Admin
+// ================================
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -72,7 +95,9 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-// Configure the HTTP request pipeline. // NO CHANGE
+// ================================
+// Middleware Pipeline
+// ================================
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -81,10 +106,14 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+// ================================
+// Routes
+// ================================
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Task}/{action=Index}/{id?}");
