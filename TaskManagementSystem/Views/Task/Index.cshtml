@@ -1,31 +1,30 @@
 ﻿@model TaskManagementSystem.ViewModels.TaskListViewModel
+
 @{
     ViewData["Title"] = "Task List";
 }
 
-<!-- ===== PAGE HEADER ===== -->
-<div class="card mb-3 shadow-sm">
-    <div class="card-body d-flex justify-content-between align-items-center">
-        <h2 class="mb-0 fw-semibold">
-            <i class="bi bi-list-check text-primary"></i> Task List
-        </h2>
+<link rel="stylesheet" href="~/css/tasklist.css" />
 
-        <div>
-            <a asp-controller="Calendar" asp-action="Index" class="btn btn-outline-secondary me-2">
-                <i class="bi bi-calendar3"></i> Calendar View
+<div class="task-page">
+
+    <!-- ===== HEADER ===== -->
+    <div class="task-card task-header">
+        <h2>📋 Task List</h2>
+        <div class="task-actions">
+            <a asp-controller="Calendar" asp-action="Index" class="btn btn-outline-secondary">
+                📅 Calendar View
             </a>
             <a asp-action="Create" class="btn btn-primary">
-                <i class="bi bi-plus-circle"></i> Create Task
+                ➕ Create Task
             </a>
         </div>
     </div>
-</div>
 
-<!-- ===== FILTERS ===== -->
-<div class="card mb-3">
-    <div class="card-body">
+    <!-- ===== FILTERS ===== -->
+    <div class="task-card task-filters">
         <form method="get" asp-action="Index">
-            <div class="row g-3">
+            <div class="row g-2">
 
                 <div class="col-md-12">
                     <input type="text"
@@ -39,14 +38,9 @@
                     <select name="statusFilter" class="form-select">
                         @foreach (var s in Model.StatusOptions)
                         {
-                            @if (s.Key == Model.StatusFilter)
-                            {
-                                <option value="@s.Key" selected>@s.Value</option>
-                            }
-                            else
-                            {
-                                <option value="@s.Key">@s.Value</option>
-                            }
+                            <option value="@s.Key" selected="@(s.Key == Model.StatusFilter)">
+                                @s.Value
+                            </option>
                         }
                     </select>
                 </div>
@@ -55,14 +49,9 @@
                     <select name="priorityFilter" class="form-select">
                         @foreach (var p in Model.PriorityOptions)
                         {
-                            @if (p.Key == Model.PriorityFilter)
-                            {
-                                <option value="@p.Key" selected>@p.Value</option>
-                            }
-                            else
-                            {
-                                <option value="@p.Key">@p.Value</option>
-                            }
+                            <option value="@p.Key" selected="@(p.Key == Model.PriorityFilter)">
+                                @p.Value
+                            </option>
                         }
                     </select>
                 </div>
@@ -82,23 +71,18 @@
                 </div>
 
                 <div class="col-md-12">
-                    <button class="btn btn-primary me-2">
-                        <i class="bi bi-funnel"></i> Apply
-                    </button>
-                    <a asp-action="Index" class="btn btn-outline-secondary">
-                        Clear
-                    </a>
+                    <button class="btn btn-primary me-2">Apply</button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Clear</a>
                 </div>
+
             </div>
         </form>
     </div>
-</div>
 
-<!-- ===== TASK TABLE ===== -->
-<div class="card shadow-sm">
-    <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0">
-            <thead class="table-light">
+    <!-- ===== TASK TABLE ===== -->
+    <div class="task-card">
+        <table class="task-table">
+            <thead>
                 <tr>
                     <th>Title</th>
                     <th>Description</th>
@@ -113,10 +97,12 @@
             <tbody>
                 @foreach (var task in Model.Tasks)
                 {
-                    var isOverdue = task.DueDate.HasValue && task.DueDate.Value.Date < DateTime.Today && task.Status != "Completed";
+                    var isOverdue = task.DueDate.HasValue
+                    && task.DueDate.Value.Date < DateTime.Today
+                    && task.Status != "Completed";
 
-                    <tr class="@(isOverdue ? "table-danger-subtle" : "")">
-                        <td class="fw-semibold">@task.Title</td>
+                    <tr>
+                        <td><strong>@task.Title</strong></td>
 
                         <td class="text-muted">
                             @(string.IsNullOrEmpty(task.Description)
@@ -127,29 +113,34 @@
                         </td>
 
                         <td>
-                            <span class="badge bg-secondary">@task.Status</span>
+                            <span class="badge-status
+                                    @(task.Status == "Pending" ? "status-pending" :
+                                                                    task.Status == "In Progress" ? "status-progress" :
+                                                                    "status-done")">
+                                @task.Status
+                            </span>
                         </td>
 
                         <td>
                             @if (task.Priority == 1)
                             {
-                                <span class="badge bg-danger-subtle text-danger">High</span>
+                                <span class="badge-priority priority-high">High</span>
                             }
                             else if (task.Priority == 2)
                             {
-                                <span class="badge bg-warning-subtle text-warning">Medium</span>
+                                <span class="badge-priority priority-medium">Medium</span>
                             }
                             else
                             {
-                                <span class="badge bg-primary-subtle text-primary">Low</span>
+                                <span class="badge-priority priority-low">Low</span>
                             }
                         </td>
 
-                        <td class="fw-semibold">
+                        <td>
                             @(task.DueDate?.ToString("MMM dd, yyyy") ?? "—")
                             @if (isOverdue)
                             {
-                                <span class="badge bg-danger ms-1">Overdue</span>
+                                <span class="badge-overdue">Overdue</span>
                             }
                         </td>
 
@@ -157,9 +148,11 @@
                             @task.CreatedAt.ToString("MMM dd, yyyy")
                         </td>
 
-                        <td class="text-end">
-                            <a asp-action="Details" asp-route-id="@task.Id" class="btn btn-sm btn-outline-info">
-                                <i class="bi bi-eye"></i>
+                        <td>
+                            <a asp-action="Details"
+                               asp-route-id="@task.Id"
+                               class="view-btn">
+                                👁
                             </a>
                         </td>
                     </tr>
@@ -167,4 +160,5 @@
             </tbody>
         </table>
     </div>
+
 </div>

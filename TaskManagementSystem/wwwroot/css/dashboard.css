@@ -1,0 +1,101 @@
+﻿/* ===== DASHBOARD GENERAL ===== */
+.dashboard-page {
+    background: #f5f7fb;
+    padding: 25px;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.dashboard-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.dashboard-subtitle {
+    color: #64748b;
+}
+
+/* ===== STATS CARDS ===== */
+.stat-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.05);
+}
+
+.stat-label {
+    font-size: 14px;
+    color: #64748b;
+}
+
+.stat-number {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.progress {
+    height: 8px;
+    border-radius: 999px;
+    background: #e5e7eb;
+}
+
+.progress-bar {
+    border-radius: 999px;
+}
+
+/* ===== RECENT TASKS ===== */
+.dashboard-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.05);
+}
+
+.dashboard-card-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid #e5e7eb;
+    font-weight: 600;
+}
+
+.dashboard-table th {
+    color: #64748b;
+    font-size: 14px;
+}
+
+.dashboard-table td {
+    vertical-align: middle;
+}
+
+/* ===== BADGES ===== */
+.badge-pending {
+    background: #facc15;
+    color: #78350f;
+}
+
+.badge-completed {
+    background: #22c55e;
+    color: #fff;
+}
+
+.badge-low {
+    background: #64748b;
+}
+
+.badge-high {
+    background: #ef4444;
+}
+
+/* ===== CHART CARD ===== */
+.chart-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.05);
+}
+
+/* ===== BUTTON ===== */
+.btn-create {
+    border-radius: 12px;
+    padding: 10px 18px;
+    font-weight: 600;
+}
