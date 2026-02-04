@@ -1,4 +1,5 @@
-﻿@model TaskManagementSystem.ViewModels.TaskListViewModel
+﻿@using TaskManagementSystem.Helpers
+@model TaskManagementSystem.ViewModels.TaskListViewModel
 
 @{
     ViewData["Title"] = "Task List";
@@ -97,11 +98,7 @@
             <tbody>
                 @foreach (var task in Model.Tasks)
                 {
-                    var isOverdue = task.DueDate.HasValue
-                    && task.DueDate.Value.Date < DateTime.Today
-                    && task.Status != "Completed";
-
-                    <tr>
+                    <tr class="@TaskDeadlineHelper.GetDeadlineClass(task.DueDate, task.Status)">
                         <td><strong>@task.Title</strong></td>
 
                         <td class="text-muted">
@@ -116,6 +113,7 @@
                             <span class="badge-status
                                     @(task.Status == "Pending" ? "status-pending" :
                                                                     task.Status == "In Progress" ? "status-progress" :
+                                                                    task.Status == "Overdue" ? "status-overdue" :
                                                                     "status-done")">
                                 @task.Status
                             </span>
@@ -136,11 +134,18 @@
                             }
                         </td>
 
+                        <!-- ✅ SMART DEADLINE COLUMN -->
                         <td>
-                            @(task.DueDate?.ToString("MMM dd, yyyy") ?? "—")
-                            @if (isOverdue)
+                            @task.DueDate?.ToString("MMM dd, yyyy")
+
+                            @{
+                                var label = TaskDeadlineHelper
+                                .GetDeadlineLabel(task.DueDate, task.Status);
+                            }
+
+                            @if (!string.IsNullOrEmpty(label))
                             {
-                                <span class="badge-overdue">Overdue</span>
+                                <span class="badge deadline-badge">@label</span>
                             }
                         </td>
 

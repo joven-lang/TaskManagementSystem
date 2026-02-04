@@ -1,16 +1,21 @@
-﻿/* ===== TASK LIST GENERAL ===== */
+﻿/* =========================
+   TASK LIST – CLEAN VERSION
+   ========================= */
+
+/* ===== PAGE ===== */
 .task-page {
     background: #f5f7fb;
     padding: 25px;
     font-family: 'Segoe UI', sans-serif;
 }
 
+/* ===== CARD ===== */
 .task-card {
     background: #fff;
     border-radius: 14px;
     padding: 20px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
     margin-bottom: 20px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
 }
 
 /* ===== HEADER ===== */
@@ -30,7 +35,7 @@
     padding: 8px 14px;
 }
 
-/* ===== FILTER BAR ===== */
+/* ===== FILTERS ===== */
 .task-filters input,
 .task-filters select {
     border-radius: 10px;
@@ -66,7 +71,7 @@
         vertical-align: middle;
     }
 
-/* ===== BADGES ===== */
+/* ===== STATUS BADGE ===== */
 .badge-status {
     padding: 5px 12px;
     border-radius: 999px;
@@ -89,6 +94,7 @@
     color: #166534;
 }
 
+/* ===== PRIORITY BADGE ===== */
 .badge-priority {
     padding: 5px 12px;
     border-radius: 999px;
@@ -111,13 +117,26 @@
     color: #991b1b;
 }
 
-.badge-overdue {
+/* ===== DEADLINE ===== */
+.deadline-today {
+    background: #e7f1ff;
+}
+
+.deadline-tomorrow {
+    background: #fff3cd;
+}
+
+.deadline-overdue {
+    background: #f8d7da;
+}
+
+.deadline-badge {
+    margin-left: 6px;
+    font-size: 11px;
+    padding: 4px 8px;
+    border-radius: 8px;
     background: #ef4444;
     color: #fff;
-    padding: 4px 10px;
-    border-radius: 999px;
-    font-size: 11px;
-    margin-left: 6px;
 }
 
 /* ===== ACTION BUTTON ===== */

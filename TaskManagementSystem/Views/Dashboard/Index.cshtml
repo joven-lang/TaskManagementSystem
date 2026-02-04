@@ -1,4 +1,5 @@
-﻿@model TaskManagementSystem.ViewModels.DashboardViewModel
+﻿@using TaskManagementSystem.Helpers
+@model TaskManagementSystem.ViewModels.DashboardViewModel
 
 @{
     ViewData["Title"] = "Dashboard";
@@ -15,7 +16,6 @@
             <p class="dashboard-subtitle">Track your productivity and task progress</p>
         </div>
 
-        <!-- ✅ FIXED CREATE BUTTON -->
         <a asp-controller="Task" asp-action="Create"
            class="btn btn-primary btn-create">
             + Create Task
@@ -93,27 +93,43 @@
                             {
                                 foreach (var task in Model.RecentTasks)
                                 {
-                                    <tr>
+                                    <tr class="@TaskDeadlineHelper.GetDeadlineClass(task.DueDate, task.Status)">
                                         <td class="fw-semibold">@task.Title</td>
 
                                         <td>
-                                            <span class="badge @(task.Status == "Completed" ? "badge-completed" : "badge-pending")">
+                                            <span class="badge @(task.Status == "Completed"
+                                                                                                  ? "badge-completed"
+                                                                                                  : task.Status == "Overdue"
+                                                                                                      ? "badge-overdue"
+                                                                                                      : "badge-pending")">
                                                 @task.Status
                                             </span>
                                         </td>
 
                                         <td>
                                             <span class="badge
-                                                    @(task.Priority == 1 ? "badge-high" :
-                                                                                                task.Priority == 2 ? "badge-medium" :
-                                                                                                "badge-low")">
+                                                        @(task.Priority == 1 ? "badge-high" :
+                                                                                                    task.Priority == 2 ? "badge-medium" :
+                                                                                                    "badge-low")">
                                                 @(task.Priority == 1 ? "High" :
                                                                                         task.Priority == 2 ? "Medium" :
                                                                                         "Low")
                                             </span>
                                         </td>
 
-                                        <td>@task.DueDate?.ToString("MMM dd, yyyy")</td>
+                                        <td>
+                                            @task.DueDate?.ToString("MMM dd, yyyy")
+
+                                            @{
+                                                var label = TaskDeadlineHelper
+                                                .GetDeadlineLabel(task.DueDate, task.Status);
+                                            }
+
+                                            @if (!string.IsNullOrEmpty(label))
+                                            {
+                                                <span class="badge deadline-badge">@label</span>
+                                            }
+                                        </td>
                                     </tr>
                                 }
                             }
@@ -129,7 +145,6 @@
                     </table>
                 </div>
 
-                <!-- ✅ FIXED VIEW ALL -->
                 <div class="text-end p-3">
                     <a asp-controller="Task" asp-action="Index"
                        class="btn btn-outline-primary btn-sm">

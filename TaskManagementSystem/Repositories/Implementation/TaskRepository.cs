@@ -13,31 +13,34 @@ namespace TaskManagementSystem.Repositories.Implementation
             _context = context;
         }
 
-        public async Task<IEnumerable<TaskEntity>> GetAll() // NO CHANGE
+        // ===================== CORE METHODS =====================
+
+        public async Task<IEnumerable<TaskEntity>> GetAll()
         {
-            return await _context.Tasks.ToListAsync();
+            var tasks = await _context.Tasks.ToListAsync();
+            await ApplyAutoOverdue(tasks);
+            return tasks;
         }
 
-        public async Task<TaskEntity?> GetById(int id) // NO CHANGE - BUT ADDED Include
+        public async Task<TaskEntity?> GetById(int id)
         {
-            // ADDED - Include User to get email
             return await _context.Tasks
                 .Include(t => t.User)
                 .FirstOrDefaultAsync(t => t.Id == id);
         }
 
-        public async Task Create(TaskEntity task) // NO CHANGE
+        public async Task Create(TaskEntity task)
         {
             await _context.Tasks.AddAsync(task);
         }
 
-        public async Task Update(TaskEntity task) // NO CHANGE
+        public async Task Update(TaskEntity task)
         {
             _context.Tasks.Update(task);
             await Task.CompletedTask;
         }
 
-        public async Task Delete(int id) // NO CHANGE
+        public async Task Delete(int id)
         {
             var task = await GetById(id);
             if (task != null)
@@ -46,95 +49,128 @@ namespace TaskManagementSystem.Repositories.Implementation
             }
         }
 
-        public async Task Save() // NO CHANGE
+        public async Task Save()
         {
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<TaskEntity>> GetAllTasksAsync() // NO CHANGE
+        // ===================== USER / LIST =====================
+
+        public async Task<IEnumerable<TaskEntity>> GetAllTasksAsync()
         {
-            return await _context.Tasks.ToListAsync();
+            var tasks = await _context.Tasks.ToListAsync();
+            await ApplyAutoOverdue(tasks);
+            return tasks;
         }
 
-        public async Task<IEnumerable<TaskEntity>> GetTasksByUserIdAsync(string userId) // NO CHANGE
+        public async Task<IEnumerable<TaskEntity>> GetTasksByUserIdAsync(string userId)
         {
-            return await _context.Tasks
+            var tasks = await _context.Tasks
                 .Where(t => t.UserId == userId)
                 .ToListAsync();
+
+            await ApplyAutoOverdue(tasks);
+            return tasks;
         }
 
-        public async Task<IEnumerable<TaskEntity>> GetAllSortedAsync(string sortField, string sortOrder) // NO CHANGE
+        // ===================== SORT / FILTER / PAGING =====================
+
+        public async Task<IEnumerable<TaskEntity>> GetAllSortedAsync(string sortField, string sortOrder)
         {
             IQueryable<TaskEntity> query = _context.Tasks;
 
             query = ApplySorting(query, sortField, sortOrder);
 
-            return await query.ToListAsync();
+            var tasks = await query.ToListAsync();
+            await ApplyAutoOverdue(tasks);
+
+            return tasks;
         }
 
-        public async Task<(IEnumerable<TaskEntity> Tasks, int TotalCount)> GetAllFilteredSortedPagedAsync(
-            string sortField,
-            string sortOrder,
-            int page,
-            int pageSize,
-            string? statusFilter,
-            string? priorityFilter,
-            string? searchTerm)
+        public async Task<(IEnumerable<TaskEntity> Tasks, int TotalCount)>
+            GetAllFilteredSortedPagedAsync(
+                string sortField,
+                string sortOrder,
+                int page,
+                int pageSize,
+                string? statusFilter,
+                string? priorityFilter,
+                string? searchTerm)
         {
-            // ADDED - Include User to get email
-            IQueryable<TaskEntity> query = _context.Tasks.Include(t => t.User);
+            IQueryable<TaskEntity> query = _context.Tasks
+                .Include(t => t.User);
 
-            // Apply filters // NO CHANGE
             query = ApplyFilters(query, statusFilter, priorityFilter, searchTerm);
 
-            // Get total count AFTER filtering but BEFORE pagination // NO CHANGE
             var totalCount = await query.CountAsync();
 
-            // Apply sorting // NO CHANGE
             query = ApplySorting(query, sortField, sortOrder);
 
-            // Apply pagination // NO CHANGE
-            query = query
+            var tasks = await query
                 .Skip((page - 1) * pageSize)
-                .Take(pageSize);
+                .Take(pageSize)
+                .ToListAsync();
 
-            var tasks = await query.ToListAsync();
+            await ApplyAutoOverdue(tasks);
 
             return (tasks, totalCount);
         }
 
-        private IQueryable<TaskEntity> ApplyFilters( // NO CHANGE
+        // ===================== AUTO OVERDUE (⭐ MAIN FEATURE) =====================
+
+        private async Task ApplyAutoOverdue(IEnumerable<TaskEntity> tasks)
+        {
+            bool hasChanges = false;
+
+            foreach (var task in tasks)
+            {
+                if (task.DueDate.HasValue &&
+                    task.DueDate.Value.Date < DateTime.Today &&
+                    task.Status != "Completed" &&
+                    task.Status != "Overdue")
+                {
+                    task.Status = "Overdue";
+                    hasChanges = true;
+                }
+            }
+
+            if (hasChanges)
+            {
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        // ===================== HELPERS =====================
+
+        private IQueryable<TaskEntity> ApplyFilters(
             IQueryable<TaskEntity> query,
             string? statusFilter,
             string? priorityFilter,
             string? searchTerm)
         {
-            // Status filter
             if (!string.IsNullOrWhiteSpace(statusFilter))
             {
                 query = query.Where(t => t.Status == statusFilter);
             }
 
-            // Priority filter
-            if (!string.IsNullOrWhiteSpace(priorityFilter) && int.TryParse(priorityFilter, out var priority))
+            if (!string.IsNullOrWhiteSpace(priorityFilter) &&
+                int.TryParse(priorityFilter, out var priority))
             {
                 query = query.Where(t => t.Priority == priority);
             }
 
-            // Search term (searches in Title and Description)
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
-                var lowerSearchTerm = searchTerm.ToLower();
+                var lower = searchTerm.ToLower();
                 query = query.Where(t =>
-                    (t.Title != null && t.Title.ToLower().Contains(lowerSearchTerm)) ||
-                    (t.Description != null && t.Description.ToLower().Contains(lowerSearchTerm))
-                );
+                    (t.Title != null && t.Title.ToLower().Contains(lower)) ||
+                    (t.Description != null && t.Description.ToLower().Contains(lower)));
             }
 
             return query;
         }
 
-        private IQueryable<TaskEntity> ApplySorting( // NO CHANGE
+        private IQueryable<TaskEntity> ApplySorting(
             IQueryable<TaskEntity> query,
             string sortField,
             string sortOrder)
@@ -162,8 +198,8 @@ namespace TaskManagementSystem.Repositories.Implementation
                     : query.OrderByDescending(t => t.CreatedAt),
 
                 "CreatedBy" => sortOrder == "asc"
-       ? query.OrderBy(t => t.User != null ? t.User.Email : "")
-       : query.OrderByDescending(t => t.User != null ? t.User.Email : ""),
+                    ? query.OrderBy(t => t.User != null ? t.User.Email : "")
+                    : query.OrderByDescending(t => t.User != null ? t.User.Email : ""),
 
                 _ => query.OrderByDescending(t => t.CreatedAt)
             };

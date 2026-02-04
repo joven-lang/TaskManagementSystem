@@ -1,10 +1,15 @@
-﻿/* ===== DASHBOARD GENERAL ===== */
+﻿/* =========================
+   DASHBOARD – MODERN CLEAN
+   ========================= */
+
+/* ===== PAGE ===== */
 .dashboard-page {
     background: #f5f7fb;
     padding: 25px;
     font-family: 'Segoe UI', sans-serif;
 }
 
+/* ===== TITLES ===== */
 .dashboard-title {
     font-size: 28px;
     font-weight: 700;
@@ -15,12 +20,12 @@
     color: #64748b;
 }
 
-/* ===== STATS CARDS ===== */
+/* ===== STAT CARDS ===== */
 .stat-card {
-    background: #fff;
+    background: #ffffff;
     border-radius: 16px;
     padding: 20px;
-    box-shadow: 0 8px 24px rgba(0,0,0,.05);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.05);
 }
 
 .stat-label {
@@ -31,42 +36,47 @@
 .stat-number {
     font-size: 28px;
     font-weight: 700;
-    margin-bottom: 10px;
+    color: #0f172a;
 }
 
+/* ===== PROGRESS ===== */
 .progress {
     height: 8px;
     border-radius: 999px;
     background: #e5e7eb;
+    overflow: hidden;
 }
 
 .progress-bar {
     border-radius: 999px;
 }
 
-/* ===== RECENT TASKS ===== */
+/* ===== DASHBOARD CARDS ===== */
 .dashboard-card {
-    background: #fff;
+    background: #ffffff;
     border-radius: 16px;
-    box-shadow: 0 8px 24px rgba(0,0,0,.05);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.05);
 }
 
 .dashboard-card-header {
     padding: 16px 20px;
     border-bottom: 1px solid #e5e7eb;
     font-weight: 600;
+    color: #0f172a;
 }
 
+/* ===== TABLE ===== */
 .dashboard-table th {
-    color: #64748b;
     font-size: 14px;
+    font-weight: 600;
+    color: #64748b;
 }
 
 .dashboard-table td {
     vertical-align: middle;
 }
 
-/* ===== BADGES ===== */
+/* ===== STATUS BADGES ===== */
 .badge-pending {
     background: #facc15;
     color: #78350f;
@@ -74,23 +84,49 @@
 
 .badge-completed {
     background: #22c55e;
-    color: #fff;
+    color: #ffffff;
 }
 
+.badge-overdue {
+    background: #ef4444;
+    color: #ffffff;
+}
+
+/* ===== PRIORITY BADGES ===== */
 .badge-low {
-    background: #64748b;
+    background: #38bdf8;
+    color: #0c4a6e;
+}
+
+.badge-medium {
+    background: #fef3c7;
+    color: #92400e;
 }
 
 .badge-high {
     background: #ef4444;
+    color: #ffffff;
 }
 
-/* ===== CHART CARD ===== */
+/* ===== DEADLINE HIGHLIGHT ===== */
+.deadline-today {
+    background: #e7f1ff;
+}
+
+.deadline-tomorrow {
+    background: #fff3cd;
+}
+
+.deadline-overdue {
+    background: #f8d7da;
+}
+
+/* ===== CHART ===== */
 .chart-card {
-    background: #fff;
+    background: #ffffff;
     border-radius: 16px;
     padding: 20px;
-    box-shadow: 0 8px 24px rgba(0,0,0,.05);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.05);
 }
 
 /* ===== BUTTON ===== */
