@@ -1,137 +1,454 @@
-﻿/* =========================
-   DASHBOARD – MODERN CLEAN
-   ========================= */
+﻿/* ============================================
+   TASK MANAGEMENT SYSTEM - MAIN STYLESHEET
+   Modern, Clean Design with Refined Bootstrap
+   ============================================ */
 
-/* ===== PAGE ===== */
-.dashboard-page {
-    background: #f5f7fb;
-    padding: 25px;
-    font-family: 'Segoe UI', sans-serif;
+/* ===== ROOT VARIABLES - Modern Color Palette ===== */
+:root {
+    /* Primary Brand Colors */
+    --primary-color: #4F46E5; /* Indigo - Modern, professional */
+    --primary-hover: #4338CA;
+    --primary-light: #EEF2FF;
+    /* Status Colors */
+    --success-color: #10B981; /* Emerald green */
+    --warning-color: #F59E0B; /* Amber */
+    --danger-color: #EF4444; /* Red */
+    --info-color: #06B6D4; /* Cyan */
+    /* Neutral Colors */
+    --text-primary: #1F2937; /* Dark gray */
+    --text-secondary: #6B7280; /* Medium gray */
+    --text-muted: #9CA3AF; /* Light gray */
+    /* Background Colors */
+    --bg-primary: #FFFFFF;
+    --bg-secondary: #F9FAFB;
+    --bg-tertiary: #F3F4F6;
+    /* Border Colors */
+    --border-color: #E5E7EB;
+    --border-light: #F3F4F6;
+    /* Shadow */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    /* Spacing */
+    --border-radius: 0.5rem;
+    --border-radius-lg: 0.75rem;
+    --border-radius-sm: 0.375rem;
 }
 
-/* ===== TITLES ===== */
-.dashboard-title {
-    font-size: 28px;
+/* ===== GLOBAL STYLES ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 0.9375rem;
+    color: var(--text-primary);
+    background-color: var(--bg-secondary);
+    line-height: 1.6;
+    margin-bottom: 60px;
+}
+
+/* ===== ENHANCED NAVBAR ===== */
+.navbar {
+    background: var(--bg-primary) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    box-shadow: var(--shadow-sm);
+    padding: 0.75rem 0;
+}
+
+.navbar-brand {
     font-weight: 700;
-    color: #0f172a;
+    font-size: 1.25rem;
+    color: var(--primary-color) !important;
+    transition: color 0.2s ease;
 }
 
-.dashboard-subtitle {
-    color: #64748b;
+    .navbar-brand:hover {
+        color: var(--primary-hover) !important;
+    }
+
+    .navbar-brand i {
+        font-size: 1.5rem;
+        vertical-align: middle;
+        margin-right: 0.25rem;
+    }
+
+.nav-link {
+    color: var(--text-secondary) !important;
+    font-weight: 500;
+    padding: 0.5rem 1rem !important;
+    transition: all 0.2s ease;
+    border-radius: var(--border-radius-sm);
+    margin: 0 0.25rem;
 }
 
-/* ===== STAT CARDS ===== */
-.stat-card {
-    background: #ffffff;
-    border-radius: 16px;
-    padding: 20px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+    .nav-link:hover {
+        color: var(--primary-color) !important;
+        background-color: var(--primary-light);
+    }
+
+    .nav-link i {
+        font-size: 1.1rem;
+        vertical-align: middle;
+        margin-right: 0.25rem;
+    }
+
+/* Notification Badge */
+.notification-badge {
+    font-size: 0.625rem;
+    padding: 0.25rem 0.4rem;
+    border-radius: 10px;
+    font-weight: 600;
 }
 
-.stat-label {
-    font-size: 14px;
-    color: #64748b;
+/* User Dropdown */
+.dropdown-menu {
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-lg);
+    border-radius: var(--border-radius);
+    padding: 0.5rem 0;
+    min-width: 200px;
 }
 
-.stat-number {
-    font-size: 28px;
+.dropdown-item {
+    padding: 0.625rem 1.25rem;
+    font-size: 0.9375rem;
+    color: var(--text-primary);
+    transition: all 0.2s ease;
+}
+
+    .dropdown-item:hover {
+        background-color: var(--primary-light);
+        color: var(--primary-color);
+    }
+
+    .dropdown-item i {
+        margin-right: 0.5rem;
+        width: 1.25rem;
+    }
+
+.dropdown-divider {
+    margin: 0.5rem 0;
+    border-color: var(--border-light);
+}
+
+/* ===== ENHANCED BUTTONS ===== */
+.btn {
+    font-weight: 600;
+    padding: 0.625rem 1.25rem;
+    border-radius: var(--border-radius);
+    transition: all 0.2s ease;
+    border: none;
+    font-size: 0.9375rem;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+    box-shadow: var(--shadow-sm);
+}
+
+    .btn-primary:hover {
+        background-color: var(--primary-hover);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+    }
+
+.btn-success {
+    background-color: var(--success-color);
+    color: white;
+    box-shadow: var(--shadow-sm);
+}
+
+    .btn-success:hover {
+        background-color: #059669;
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+    }
+
+.btn-outline-primary {
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    background: transparent;
+}
+
+    .btn-outline-primary:hover {
+        background-color: var(--primary-color);
+        color: white;
+        transform: translateY(-1px);
+    }
+
+.btn-outline-secondary {
+    border: 2px solid var(--border-color);
+    color: var(--text-secondary);
+    background: transparent;
+}
+
+    .btn-outline-secondary:hover {
+        background-color: var(--bg-tertiary);
+        border-color: var(--text-secondary);
+        color: var(--text-primary);
+    }
+
+.btn-sm {
+    padding: 0.375rem 0.875rem;
+    font-size: 0.875rem;
+}
+
+.btn-lg {
+    padding: 0.75rem 1.75rem;
+    font-size: 1rem;
+}
+
+/* ===== ENHANCED FORMS ===== */
+.form-control,
+.form-select {
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 0.625rem 0.875rem;
+    font-size: 0.9375rem;
+    transition: all 0.2s ease;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        outline: none;
+    }
+
+    .form-control::placeholder {
+        color: var(--text-muted);
+    }
+
+.form-label {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+    font-size: 0.9375rem;
+}
+
+/* ===== ENHANCED CARDS ===== */
+.card {
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-sm);
+    background-color: var(--bg-primary);
+    transition: all 0.3s ease;
+}
+
+    .card:hover {
+        box-shadow: var(--shadow-md);
+        transform: translateY(-2px);
+    }
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.card-title {
     font-weight: 700;
-    color: #0f172a;
+    color: var(--text-primary);
+    margin-bottom: 0.75rem;
 }
 
-/* ===== PROGRESS ===== */
-.progress {
-    height: 8px;
-    border-radius: 999px;
-    background: #e5e7eb;
+/* ===== ENHANCED TABLES ===== */
+.table {
+    background-color: var(--bg-primary);
+    border-radius: var(--border-radius);
     overflow: hidden;
 }
 
-.progress-bar {
-    border-radius: 999px;
-}
+    .table thead {
+        background-color: var(--bg-tertiary);
+    }
 
-/* ===== DASHBOARD CARDS ===== */
-.dashboard-card {
-    background: #ffffff;
-    border-radius: 16px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.05);
-}
+        .table thead th {
+            font-weight: 700;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border-color);
+            padding: 1rem;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
 
-.dashboard-card-header {
-    padding: 16px 20px;
-    border-bottom: 1px solid #e5e7eb;
+    .table tbody tr {
+        border-bottom: 1px solid var(--border-light);
+        transition: background-color 0.2s ease;
+    }
+
+        .table tbody tr:hover {
+            background-color: var(--bg-secondary);
+        }
+
+    .table tbody td {
+        padding: 1rem;
+        vertical-align: middle;
+        color: var(--text-primary);
+    }
+
+/* ===== ENHANCED BADGES ===== */
+.badge {
     font-weight: 600;
-    color: #0f172a;
+    padding: 0.375rem 0.75rem;
+    border-radius: var(--border-radius-sm);
+    font-size: 0.75rem;
+    letter-spacing: 0.025em;
 }
 
-/* ===== TABLE ===== */
-.dashboard-table th {
-    font-size: 14px;
-    font-weight: 600;
-    color: #64748b;
+.badge-completed,
+.bg-success {
+    background-color: #D1FAE5 !important;
+    color: #065F46 !important;
 }
 
-.dashboard-table td {
-    vertical-align: middle;
-}
-
-/* ===== STATUS BADGES ===== */
 .badge-pending {
-    background: #facc15;
-    color: #78350f;
+    background-color: #FEF3C7 !important;
+    color: #92400E !important;
 }
 
-.badge-completed {
-    background: #22c55e;
-    color: #ffffff;
-}
-
-.badge-overdue {
-    background: #ef4444;
-    color: #ffffff;
-}
-
-/* ===== PRIORITY BADGES ===== */
-.badge-low {
-    background: #38bdf8;
-    color: #0c4a6e;
-}
-
-.badge-medium {
-    background: #fef3c7;
-    color: #92400e;
+.badge-overdue,
+.bg-danger {
+    background-color: #FEE2E2 !important;
+    color: #991B1B !important;
 }
 
 .badge-high {
-    background: #ef4444;
-    color: #ffffff;
+    background-color: #FEE2E2 !important;
+    color: #991B1B !important;
 }
 
-/* ===== DEADLINE HIGHLIGHT ===== */
-.deadline-today {
-    background: #e7f1ff;
+.badge-medium {
+    background-color: #FEF3C7 !important;
+    color: #92400E !important;
 }
 
-.deadline-tomorrow {
-    background: #fff3cd;
+.badge-low {
+    background-color: #DBEAFE !important;
+    color: #1E40AF !important;
 }
 
-.deadline-overdue {
-    background: #f8d7da;
+/* ===== PAGINATION ===== */
+.pagination {
+    gap: 0.25rem;
 }
 
-/* ===== CHART ===== */
-.chart-card {
-    background: #ffffff;
-    border-radius: 16px;
-    padding: 20px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+.page-item .page-link {
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 0.5rem 0.875rem;
+    border-radius: var(--border-radius-sm);
+    transition: all 0.2s ease;
+    margin: 0 0.125rem;
 }
 
-/* ===== BUTTON ===== */
-.btn-create {
-    border-radius: 12px;
-    padding: 10px 18px;
-    font-weight: 600;
+    .page-item .page-link:hover {
+        background-color: var(--primary-light);
+        color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+
+.page-item.active .page-link {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+.page-item.disabled .page-link {
+    background-color: var(--bg-tertiary);
+    border-color: var(--border-color);
+    color: var(--text-muted);
+}
+
+/* ===== CONTAINER & SPACING ===== */
+.container {
+    max-width: 1200px;
+    padding: 0 1rem;
+}
+
+main {
+    padding-top: 2rem;
+    padding-bottom: 3rem;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 60px;
+    line-height: 60px;
+    background-color: var(--bg-primary);
+    border-top: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+/* ===== UTILITY CLASSES ===== */
+.text-muted {
+    color: var(--text-muted) !important;
+}
+
+.text-primary {
+    color: var(--primary-color) !important;
+}
+
+.text-success {
+    color: var(--success-color) !important;
+}
+
+.text-warning {
+    color: var(--warning-color) !important;
+}
+
+.text-danger {
+    color: var(--danger-color) !important;
+}
+
+.bg-light {
+    background-color: var(--bg-secondary) !important;
+}
+
+.border-top {
+    border-top: 1px solid var(--border-color) !important;
+}
+
+.box-shadow {
+    box-shadow: var(--shadow-sm) !important;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+    .navbar-brand {
+        font-size: 1.1rem;
+    }
+
+    .btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+    }
+
+    .container {
+        padding: 0 0.75rem;
+    }
+
+    main {
+        padding-top: 1rem;
+    }
+}
+
+/* ===== SMOOTH TRANSITIONS ===== */
+* {
+    transition: background-color 0.2s ease, color 0.2s ease;
 }

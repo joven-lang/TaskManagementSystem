@@ -1,233 +1,391 @@
-﻿/* =========================
-   TASK LIST – CLEAN VERSION
-   ========================= */
+﻿/* ============================================
+   TASK LIST STYLES
+   Clean, organized task management interface
+   ============================================ */
 
-/* ===== PAGE ===== */
+/* ===== TASK PAGE LAYOUT ===== */
 .task-page {
-    background: #f5f7fb;
-    padding: 25px;
-    font-family: 'Segoe UI', sans-serif;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
-/* ===== CARD ===== */
+/* ===== TASK CARDS (Base Container) ===== */
 .task-card {
-    background: #fff;
-    border-radius: 14px;
-    padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-sm);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
 }
 
-/* ===== HEADER ===== */
+    .task-card:hover {
+        box-shadow: var(--shadow-md);
+    }
+
+/* ===== TASK HEADER ===== */
 .task-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 1.5rem 2rem;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+    color: white;
+    border: none;
 }
 
     .task-header h2 {
-        font-weight: 700;
-        color: #1e293b;
+        font-size: 1.75rem;
+        font-weight: 800;
+        margin: 0;
+        color: white;
     }
 
-.task-actions button {
-    border-radius: 10px;
-    padding: 8px 14px;
+.task-actions {
+    display: flex;
+    gap: 0.75rem;
 }
 
-/* ===== FILTERS ===== */
-.task-filters input,
-.task-filters select {
-    border-radius: 10px;
-    border: 1px solid #e2e8f0;
-    padding: 8px 12px;
+    .task-actions .btn {
+        font-weight: 600;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .task-actions .btn-outline-secondary {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.3);
+        color: white;
+    }
+
+        .task-actions .btn-outline-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+            color: white;
+        }
+
+    .task-actions .btn-primary {
+        background-color: white;
+        color: var(--primary-color);
+        border: none;
+    }
+
+        .task-actions .btn-primary:hover {
+            background-color: var(--bg-secondary);
+            transform: translateY(-2px);
+        }
+
+/* ===== TASK FILTERS ===== */
+.task-filters {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
 }
 
-.task-filters button {
-    border-radius: 10px;
-}
+    .task-filters .form-control,
+    .task-filters .form-select {
+        background-color: var(--bg-primary);
+        border: 1px solid var(--border-color);
+        font-size: 0.9375rem;
+    }
 
-/* ===== TABLE ===== */
+        .task-filters .form-control:focus,
+        .task-filters .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+    .task-filters .btn {
+        font-weight: 600;
+    }
+
+/* ===== TASK TABLE ===== */
 .task-table {
     width: 100%;
     border-collapse: separate;
-    border-spacing: 0 12px;
+    border-spacing: 0;
+    font-size: 0.9375rem;
 }
 
-    .task-table thead th {
-        color: #64748b;
-        font-size: 14px;
-        text-transform: uppercase;
+    .task-table thead {
+        background-color: var(--bg-secondary);
     }
+
+        .task-table thead th {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            font-weight: 700;
+            font-size: 0.8125rem;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 2px solid var(--border-color);
+            white-space: nowrap;
+        }
 
     .task-table tbody tr {
-        background: #fff;
-        border-radius: 12px;
-        box-shadow: 0 3px 10px rgba(0,0,0,0.04);
+        border-bottom: 1px solid var(--border-light);
+        transition: all 0.2s ease;
     }
 
-    .task-table td {
-        padding: 14px;
+        .task-table tbody tr:hover {
+            background-color: var(--bg-secondary);
+            transform: scale(1.01);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .task-table tbody tr:last-child {
+            border-bottom: none;
+        }
+
+    .task-table tbody td {
+        padding: 1rem 1.5rem;
         vertical-align: middle;
+        color: var(--text-primary);
     }
 
-/* ===== STATUS BADGE ===== */
+        .task-table tbody td strong {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+    /* Deadline Row Classes */
+    .task-table tr.deadline-urgent {
+        background-color: #FEF2F2;
+        border-left: 4px solid var(--danger-color);
+    }
+
+    .task-table tr.deadline-soon {
+        background-color: #FFFBEB;
+        border-left: 4px solid var(--warning-color);
+    }
+
+    .task-table tr.deadline-safe {
+        background-color: transparent;
+        border-left: 4px solid transparent;
+    }
+
+/* ===== TASK STATUS BADGES ===== */
 .badge-status {
-    padding: 5px 12px;
-    border-radius: 999px;
-    font-size: 12px;
+    display: inline-block;
+    padding: 0.375rem 0.75rem;
+    border-radius: var(--border-radius-sm);
     font-weight: 600;
+    font-size: 0.75rem;
+    letter-spacing: 0.025em;
+    text-transform: uppercase;
 }
 
 .status-pending {
-    background: #e5e7eb;
-    color: #374151;
+    background-color: #DBEAFE;
+    color: #1E40AF;
 }
 
 .status-progress {
-    background: #dbeafe;
-    color: #1d4ed8;
+    background-color: #E0E7FF;
+    color: #4338CA;
+}
+
+.status-overdue {
+    background-color: #FEE2E2;
+    color: #991B1B;
 }
 
 .status-done {
-    background: #dcfce7;
-    color: #166534;
+    background-color: #D1FAE5;
+    color: #065F46;
 }
 
-/* ===== PRIORITY BADGE ===== */
+/* ===== TASK PRIORITY BADGES ===== */
 .badge-priority {
-    padding: 5px 12px;
-    border-radius: 999px;
-    font-size: 12px;
+    display: inline-block;
+    padding: 0.375rem 0.75rem;
+    border-radius: var(--border-radius-sm);
     font-weight: 600;
-}
-
-.priority-low {
-    background: #e0f2fe;
-    color: #0369a1;
-}
-
-.priority-medium {
-    background: #fef3c7;
-    color: #92400e;
+    font-size: 0.75rem;
+    letter-spacing: 0.025em;
 }
 
 .priority-high {
-    background: #fee2e2;
-    color: #991b1b;
+    background-color: #FEE2E2;
+    color: #991B1B;
 }
 
-/* ===== DEADLINE ===== */
-.deadline-today {
-    background: #e7f1ff;
+.priority-medium {
+    background-color: #FEF3C7;
+    color: #92400E;
 }
 
-.deadline-tomorrow {
-    background: #fff3cd;
+.priority-low {
+    background-color: #DBEAFE;
+    color: #1E40AF;
 }
 
-.deadline-overdue {
-    background: #f8d7da;
-}
-
+/* ===== DEADLINE BADGE ===== */
 .deadline-badge {
-    margin-left: 6px;
-    font-size: 11px;
-    padding: 4px 8px;
-    border-radius: 8px;
-    background: #ef4444;
-    color: #fff;
+    font-size: 0.6875rem;
+    padding: 0.25rem 0.5rem;
+    margin-left: 0.5rem;
+    background-color: var(--bg-tertiary);
+    color: var(--text-secondary);
+    border-radius: var(--border-radius-sm);
+    font-weight: 600;
 }
 
-/* ===== ACTION BUTTON ===== */
+/* ===== VIEW BUTTON ===== */
 .view-btn {
-    background: #0ea5e9;
-    color: #fff;
-    border-radius: 10px;
-    padding: 6px 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background-color: var(--primary-light);
+    color: var(--primary-color);
+    border-radius: var(--border-radius);
+    font-size: 1.25rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
 }
 
     .view-btn:hover {
-        background: #0284c7;
+        background-color: var(--primary-color);
+        color: white;
+        transform: scale(1.1);
     }
-/* ===== PAGINATION STYLES ===== */
+
+/* ===== PAGINATION ===== */
 .pagination-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px;
-    border-top: 1px solid #e5e7eb;
-    flex-wrap: wrap;
-    gap: 15px;
+    padding: 1.5rem;
+    border-top: 1px solid var(--border-color);
+    background-color: var(--bg-secondary);
+    margin-top: 1rem;
 }
 
 .pagination-info {
-    color: #6b7280;
-    font-size: 14px;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    font-weight: 500;
 }
 
 .pagination {
-    margin: 0;
-    display: flex;
-    list-style: none;
-    gap: 5px;
+    margin-bottom: 0;
 }
 
-.page-item {
-    display: inline-block;
-}
-
-.page-link {
-    padding: 8px 12px;
-    border: 1px solid #e5e7eb;
-    border-radius: 6px;
-    color: #374151;
-    text-decoration: none;
-    transition: all 0.2s;
-    font-size: 14px;
-    display: inline-block;
-    min-width: 40px;
-    text-align: center;
-}
-
-    .page-link:hover {
-        background-color: #f3f4f6;
-        border-color: #d1d5db;
-        color: #1f2937;
+    .pagination .page-item {
+        margin: 0 0.125rem;
     }
 
-.page-item.active .page-link {
-    background-color: #3b82f6;
-    border-color: #3b82f6;
-    color: white;
-    font-weight: 600;
-}
-
-.page-item.disabled .page-link {
-    color: #9ca3af;
-    cursor: not-allowed;
-    background-color: #f9fafb;
-    border-color: #e5e7eb;
-}
-
-    .page-item.disabled .page-link:hover {
-        background-color: #f9fafb;
-        border-color: #e5e7eb;
+    .pagination .page-link {
+        padding: 0.5rem 0.875rem;
+        border: 1px solid var(--border-color);
+        color: var(--text-primary);
+        border-radius: var(--border-radius-sm);
+        font-weight: 500;
+        transition: all 0.2s ease;
     }
 
-/* Responsive pagination */
+        .pagination .page-link:hover {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+    .pagination .page-item.active .page-link {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+        color: white;
+        font-weight: 700;
+    }
+
+    .pagination .page-item.disabled .page-link {
+        background-color: var(--bg-tertiary);
+        color: var(--text-muted);
+        border-color: var(--border-color);
+        cursor: not-allowed;
+    }
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 1200px) {
+    .task-table {
+        font-size: 0.875rem;
+    }
+
+        .task-table thead th,
+        .task-table tbody td {
+            padding: 0.875rem 1rem;
+        }
+}
+
+@media (max-width: 992px) {
+    .task-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+        .task-header h2 {
+            font-size: 1.5rem;
+        }
+
+    .task-actions {
+        width: 100%;
+        flex-direction: column;
+    }
+
+        .task-actions .btn {
+            width: 100%;
+        }
+}
+
 @media (max-width: 768px) {
+    .task-card {
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .task-header {
+        padding: 1.25rem 1.5rem;
+    }
+
+    .task-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+        .task-table thead th,
+        .task-table tbody td {
+            padding: 0.75rem;
+            font-size: 0.8125rem;
+        }
+
     .pagination-container {
         flex-direction: column;
-        align-items: center;
-    }
-
-    .pagination-info {
-        order: 2;
-        margin-top: 10px;
+        gap: 1rem;
+        text-align: center;
     }
 
     .pagination {
-        order: 1;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .task-header h2 {
+        font-size: 1.25rem;
+    }
+
+    .badge-status,
+    .badge-priority {
+        font-size: 0.6875rem;
+        padding: 0.25rem 0.5rem;
+    }
+
+    .view-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
     }
 }
