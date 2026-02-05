@@ -59,15 +59,18 @@
 
                 <div class="col-md-3">
                     <select name="sortField" class="form-select">
-                        <option value="DueDate">Due Date</option>
-                        <option value="CreatedAt">Created Date</option>
+                        <option value="DueDate" selected="@(Model.CurrentSortField == "DueDate")">Due Date</option>
+                        <option value="CreatedAt" selected="@(Model.CurrentSortField == "CreatedAt")">Created Date</option>
+                        <option value="Title" selected="@(Model.CurrentSortField == "Title")">Title</option>
+                        <option value="Status" selected="@(Model.CurrentSortField == "Status")">Status</option>
+                        <option value="Priority" selected="@(Model.CurrentSortField == "Priority")">Priority</option>
                     </select>
                 </div>
 
                 <div class="col-md-3">
                     <select name="sortOrder" class="form-select">
-                        <option value="asc">Ascending</option>
-                        <option value="desc">Descending</option>
+                        <option value="asc" selected="@(Model.CurrentSortOrder == "asc")">Ascending</option>
+                        <option value="desc" selected="@(Model.CurrentSortOrder == "desc")">Descending</option>
                     </select>
                 </div>
 
@@ -96,74 +99,203 @@
             </thead>
 
             <tbody>
-                @foreach (var task in Model.Tasks)
+                @if (Model.Tasks.Any())
                 {
-                    <tr class="@TaskDeadlineHelper.GetDeadlineClass(task.DueDate, task.Status)">
-                        <td><strong>@task.Title</strong></td>
+                    @foreach (var task in Model.Tasks)
+                    {
+                        <tr class="@TaskDeadlineHelper.GetDeadlineClass(task.DueDate, task.Status)">
+                            <td><strong>@task.Title</strong></td>
 
-                        <td class="text-muted">
-                            @(string.IsNullOrEmpty(task.Description)
-                                                    ? "—"
-                                                    : task.Description.Length > 60
-                                                    ? task.Description.Substring(0, 60) + "…"
-                                                    : task.Description)
-                        </td>
+                            <td class="text-muted">
+                                @(string.IsNullOrEmpty(task.Description)
+                                                        ? "—"
+                                                        : task.Description.Length > 60
+                                                        ? task.Description.Substring(0, 60) + "…"
+                                                        : task.Description)
+                            </td>
 
-                        <td>
-                            <span class="badge-status
-                                    @(task.Status == "Pending" ? "status-pending" :
-                                                                    task.Status == "In Progress" ? "status-progress" :
-                                                                    task.Status == "Overdue" ? "status-overdue" :
-                                                                    "status-done")">
-                                @task.Status
-                            </span>
-                        </td>
+                            <td>
+                                <span class="badge-status
+                                            @(task.Status == "Pending" ? "status-pending" :
+                                                                            task.Status == "In Progress" ? "status-progress" :
+                                                                            task.Status == "Overdue" ? "status-overdue" :
+                                                                            "status-done")">
+                                    @task.Status
+                                </span>
+                            </td>
 
-                        <td>
-                            @if (task.Priority == 1)
-                            {
-                                <span class="badge-priority priority-high">High</span>
-                            }
-                            else if (task.Priority == 2)
-                            {
-                                <span class="badge-priority priority-medium">Medium</span>
-                            }
-                            else
-                            {
-                                <span class="badge-priority priority-low">Low</span>
-                            }
-                        </td>
+                            <td>
+                                @if (task.Priority == 1)
+                                {
+                                    <span class="badge-priority priority-high">High</span>
+                                }
+                                else if (task.Priority == 2)
+                                {
+                                    <span class="badge-priority priority-medium">Medium</span>
+                                }
+                                else
+                                {
+                                    <span class="badge-priority priority-low">Low</span>
+                                }
+                            </td>
 
-                        <!-- ✅ SMART DEADLINE COLUMN -->
-                        <td>
-                            @task.DueDate?.ToString("MMM dd, yyyy")
+                            <td>
+                                @task.DueDate?.ToString("MMM dd, yyyy")
 
-                            @{
-                                var label = TaskDeadlineHelper
-                                .GetDeadlineLabel(task.DueDate, task.Status);
-                            }
+                                @{
+                                    var label = TaskDeadlineHelper.GetDeadlineLabel(task.DueDate, task.Status);
+                                }
 
-                            @if (!string.IsNullOrEmpty(label))
-                            {
-                                <span class="badge deadline-badge">@label</span>
-                            }
-                        </td>
+                                @if (!string.IsNullOrEmpty(label))
+                                {
+                                    <span class="badge deadline-badge">@label</span>
+                                }
+                            </td>
 
-                        <td class="text-muted">
-                            @task.CreatedAt.ToString("MMM dd, yyyy")
-                        </td>
+                            <td class="text-muted">
+                                @task.CreatedAt.ToString("MMM dd, yyyy")
+                            </td>
 
-                        <td>
-                            <a asp-action="Details"
-                               asp-route-id="@task.Id"
-                               class="view-btn">
-                                👁
-                            </a>
+                            <td>
+                                <a asp-action="Details"
+                                   asp-route-id="@task.Id"
+                                   class="view-btn">
+                                    👁
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">
+                            No tasks found
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
+
+        <!-- ===== PAGINATION ===== -->
+        @if (Model.TotalPages > 1)
+        {
+            <div class="pagination-container">
+                <div class="pagination-info">
+                    Showing @((Model.CurrentPage - 1) * Model.PageSize + 1)
+                    to @(Math.Min(Model.CurrentPage * Model.PageSize, Model.TotalItems))
+                    of @Model.TotalItems entries
+                </div>
+
+                <nav aria-label="Task pagination">
+                    <ul class="pagination">
+                        <!-- Previous Button -->
+                        <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
+                            <a class="page-link"
+                               asp-action="Index"
+                               asp-route-page="@(Model.CurrentPage - 1)"
+                               asp-route-pageSize="@Model.PageSize"
+                               asp-route-sortField="@Model.CurrentSortField"
+                               asp-route-sortOrder="@Model.CurrentSortOrder"
+                               asp-route-statusFilter="@Model.StatusFilter"
+                               asp-route-priorityFilter="@Model.PriorityFilter"
+                               asp-route-searchTerm="@Model.SearchTerm">
+                                Previous
+                            </a>
+                        </li>
+
+                        @{
+                            var startPage = Math.Max(1, Model.CurrentPage - 2);
+                            var endPage = Math.Min(Model.TotalPages, Model.CurrentPage + 2);
+
+                            // Show first page
+                            if (startPage > 1)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       asp-action="Index"
+                                       asp-route-page="1"
+                                       asp-route-pageSize="@Model.PageSize"
+                                       asp-route-sortField="@Model.CurrentSortField"
+                                       asp-route-sortOrder="@Model.CurrentSortOrder"
+                                       asp-route-statusFilter="@Model.StatusFilter"
+                                       asp-route-priorityFilter="@Model.PriorityFilter"
+                                       asp-route-searchTerm="@Model.SearchTerm">
+                                        1
+                                    </a>
+                                </li>
+
+                                if (startPage > 2)
+                                {
+                                    <li class="page-item disabled">
+                                        <span class="page-link">...</span>
+                                    </li>
+                                }
+                            }
+
+                            // Page numbers
+                            for (var i = startPage; i <= endPage; i++)
+                            {
+                                <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                                    <a class="page-link"
+                                       asp-action="Index"
+                                       asp-route-page="@i"
+                                       asp-route-pageSize="@Model.PageSize"
+                                       asp-route-sortField="@Model.CurrentSortField"
+                                       asp-route-sortOrder="@Model.CurrentSortOrder"
+                                       asp-route-statusFilter="@Model.StatusFilter"
+                                       asp-route-priorityFilter="@Model.PriorityFilter"
+                                       asp-route-searchTerm="@Model.SearchTerm">
+                                        @i
+                                    </a>
+                                </li>
+                            }
+
+                            // Show last page
+                            if (endPage < Model.TotalPages)
+                            {
+                                if (endPage < Model.TotalPages - 1)
+                                {
+                                    <li class="page-item disabled">
+                                        <span class="page-link">...</span>
+                                    </li>
+                                }
+
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       asp-action="Index"
+                                       asp-route-page="@Model.TotalPages"
+                                       asp-route-pageSize="@Model.PageSize"
+                                       asp-route-sortField="@Model.CurrentSortField"
+                                       asp-route-sortOrder="@Model.CurrentSortOrder"
+                                       asp-route-statusFilter="@Model.StatusFilter"
+                                       asp-route-priorityFilter="@Model.PriorityFilter"
+                                       asp-route-searchTerm="@Model.SearchTerm">
+                                        @Model.TotalPages
+                                    </a>
+                                </li>
+                            }
+                        }
+
+                        <!-- Next Button -->
+                        <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
+                            <a class="page-link"
+                               asp-action="Index"
+                               asp-route-page="@(Model.CurrentPage + 1)"
+                               asp-route-pageSize="@Model.PageSize"
+                               asp-route-sortField="@Model.CurrentSortField"
+                               asp-route-sortOrder="@Model.CurrentSortOrder"
+                               asp-route-statusFilter="@Model.StatusFilter"
+                               asp-route-priorityFilter="@Model.PriorityFilter"
+                               asp-route-searchTerm="@Model.SearchTerm">
+                                Next
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        }
+
     </div>
 
 </div>
