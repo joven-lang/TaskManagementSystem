@@ -108,15 +108,22 @@ namespace TaskManagementSystem.Services.Implementation
             return true;
         }
 
-        public async Task<bool> DeleteTaskAsync(int id) // NO CHANGE
+        public async Task<bool> DeleteTaskAsync(int id)
         {
-            var task = await _taskRepository.GetById(id);
-            if (task == null)
-                return false;
+            try
+            {
+                var task = await _taskRepository.GetById(id);
+                if (task == null)
+                    return false;
 
-            await _taskRepository.Delete(id);
-            await _taskRepository.Save();
-            return true;
+                await _taskRepository.Delete(id);
+                await _taskRepository.Save();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }

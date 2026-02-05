@@ -42,7 +42,12 @@ namespace TaskManagementSystem.Repositories.Implementation
 
         public async Task Delete(int id)
         {
-            var task = await GetById(id);
+            // Step 1: Delete notifications FIRST
+            var notifications = _context.Notifications.Where(n => n.TaskId == id);
+            _context.Notifications.RemoveRange(notifications);
+
+            // Step 2: Then delete task
+            var task = await _context.Tasks.FindAsync(id);
             if (task != null)
             {
                 _context.Tasks.Remove(task);

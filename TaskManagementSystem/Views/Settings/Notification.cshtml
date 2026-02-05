@@ -1,0 +1,84 @@
+﻿@{
+    ViewData["Title"] = "Notification Preferences";
+}
+
+<link rel="stylesheet" href="~/css/notification.css" />
+
+<div class="notify-wrapper">
+
+    <div class="notify-header">
+        <h2>🔔 Notification Preferences</h2>
+        <p>Control how and when you receive task alerts</p>
+    </div>
+
+    <div class="notify-grid">
+
+        <!-- LEFT -->
+        <div class="notify-card">
+            <h5 class="card-title">General Settings</h5>
+
+            <div class="notify-row">
+                <span>Notification Frequency</span>
+                <span class="pill">Every Hour</span>
+            </div>
+
+            <div class="divider"></div>
+
+            <h6>Task Alerts</h6>
+
+            <div class="notify-toggle">
+                <span>📅 Due Tomorrow</span>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="notify-toggle">
+                <span>⏰ Due Today</span>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="notify-toggle">
+                <span>⚠️ Overdue Tasks</span>
+                <span class="pill danger">Always On</span>
+            </div>
+
+            <div class="divider"></div>
+
+            <h6>Quiet Hours</h6>
+            <div class="quiet-hours">
+                <span>🌙 10:00 PM – 7:00 AM</span>
+                <span class="pill soft">Enabled</span>
+            </div>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="notify-card highlight">
+            <h5 class="card-title">🤖 Smart Insights</h5>
+
+            <div class="ai-box">
+                ✔ You usually complete tasks in <b>2 days</b>
+            </div>
+
+            <div class="ai-box warning">
+                ⚠️ 3 tasks may be overdue soon
+            </div>
+
+            <div class="ai-box success">
+                🔥 Productivity peaks in the morning 
+            </div>
+
+            <button class="save-btn">Save Preferences</button>
+        </div>
+
+    </div>
+
+    <div class="notify-footer">
+        © 2024 Task Management System
+    </div>
+
+</div>
