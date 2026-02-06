@@ -3,67 +3,109 @@
     ViewData["Title"] = "Notifications";
 }
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2><i class="bi bi-bell"></i> Notifications</h2>
+<link rel="stylesheet" href="~/css/notifications.css" />
+
+<div class="container notification-page">
+    <!-- ===== NOTIFICATION HEADER ===== -->
+    <div class="notification-header">
+        <h2>
+            <i class="bi bi-bell-fill"></i> Notifications
+        </h2>
         @if (Model.Any(n => !n.IsRead))
         {
             <form asp-action="MarkAllAsRead" method="post">
-                <button type="submit" class="btn btn-sm btn-outline-primary">
+                <button type="submit" class="btn">
                     <i class="bi bi-check-all"></i> Mark All as Read
                 </button>
             </form>
         }
     </div>
 
+    <!-- ===== NOTIFICATION LIST ===== -->
     @if (!Model.Any())
     {
-        <div class="alert alert-info">
-            <i class="bi bi-info-circle"></i> No notifications yet.
+        <div class="notification-empty">
+            <i class="bi bi-bell-slash"></i>
+            <h4>No notifications yet</h4>
+            <p>When you have new notifications, they'll appear here.</p>
         </div>
     }
     else
     {
-        <div class="list-group">
+        <div class="notification-list">
             @foreach (var notification in Model)
             {
-                <div class="list-group-item @(!notification.IsRead ? "list-group-item-primary" : "")">
-                    <div class="d-flex w-100 justify-content-between">
-                        <div>
-                            @if (notification.Type == "Overdue")
-                            {
-                                <span class="badge bg-danger me-2">Overdue</span>
-                            }
-                            else if (notification.Type == "DueToday")
-                            {
-                                <span class="badge bg-warning me-2">Due Today</span>
-                            }
-                            else if (notification.Type == "DueTomorrow")
-                            {
-                                <span class="badge bg-info me-2">Due Tomorrow</span>
-                            }
-                            <strong>@notification.Message</strong>
-                        </div>
-                        <small class="text-muted">@notification.CreatedAt.ToString("MMM dd, yyyy h:mm tt")</small>
+                <div class="notification-card @(!notification.IsRead ? "unread" : "")">
+                    <!-- Left: Status Badge -->
+                    <div class="notification-left">
+                        @if (notification.Type == "Overdue")
+                        {
+                            <span class="status-badge overdue">
+                                <i class="bi bi-exclamation-triangle-fill"></i> Overdue
+                            </span>
+                        }
+                        else if (notification.Type == "DueToday")
+                        {
+                            <span class="status-badge today">
+                                <i class="bi bi-calendar-check"></i> Today
+                            </span>
+                        }
+                        else if (notification.Type == "DueTomorrow")
+                        {
+                            <span class="status-badge tomorrow">
+                                <i class="bi bi-calendar-event"></i> Tomorrow
+                            </span>
+                        }
                     </div>
-                    @if (notification.Task != null)
-                    {
-                        <p class="mb-1 mt-2">
-                            <a asp-controller="Task" asp-action="Details" asp-route-id="@notification.TaskId" class="text-decoration-none">
-                                View Task: @notification.Task.Title
-                            </a>
-                        </p>
-                    }
-                    @if (!notification.IsRead)
-                    {
-                        <form asp-action="MarkAsRead" asp-route-id="@notification.Id" method="post" class="d-inline">
-                            <button type="submit" class="btn btn-sm btn-outline-secondary mt-2">
-                                <i class="bi bi-check"></i> Mark as Read
-                            </button>
-                        </form>
-                    }
+
+                    <!-- Body: Message and Task Link -->
+                    <div class="notification-body">
+                        <div class="notification-title">@notification.Message</div>
+                        @if (notification.Task != null)
+                        {
+                            <div class="notification-sub">
+                                <a asp-controller="Task" asp-action="Details" asp-route-id="@notification.TaskId">
+                                    <i class="bi bi-eye"></i> View Task: @notification.Task.Title
+                                </a>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Right: Timestamp and Actions -->
+                    <div class="notification-right">
+                        <div class="notification-time">
+                            @notification.CreatedAt.ToString("MMM dd, yyyy")
+                            <br />
+                            @notification.CreatedAt.ToString("h:mm tt")
+                        </div>
+                        @if (!notification.IsRead)
+                        {
+                            <div class="notification-actions">
+                                <form asp-action="MarkAsRead" asp-route-id="@notification.Id" method="post" class="d-inline">
+                                    <button type="submit" class="mark-read-btn">
+                                        <i class="bi bi-check-circle"></i> Mark Read
+                                    </button>
+                                </form>
+                            </div>
+                        }
+                    </div>
                 </div>
             }
         </div>
     }
 </div>
+
+<style>
+    /* Additional inline animations for this page */
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
