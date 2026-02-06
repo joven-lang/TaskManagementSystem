@@ -2,25 +2,117 @@
     ViewData["Title"] = "Notification Preferences";
 }
 
-<div class="container mt-4">
-    <h2><i class="bi bi-gear"></i> Notification Preferences</h2>
+<link rel="stylesheet" href="~/css/notification.css" />
 
-    <div class="card mt-4">
-        <div class="card-body">
-            <h5 class="card-title">Current Settings</h5>
-            <div class="alert alert-info">
-                <p class="mb-2"><strong>Notification Frequency:</strong> Every hour</p>
-                <p class="mb-2"><strong>Notifications for:</strong></p>
-                <ul>
-                    <li>Tasks due tomorrow (24 hours before)</li>
-                    <li>Tasks due today</li>
-                    <li>Overdue tasks</li>
-                </ul>
-            </div>
-            <p class="text-muted">
-                <i class="bi bi-info-circle"></i>
-                Notification settings are managed automatically to keep you updated on important task deadlines.
-            </p>
+<div class="notify-wrapper">
+
+    <!-- HEADER -->
+    <div class="notify-header">
+        <div class="header-icon">🔔</div>
+        <div class="header-text">
+            <h2>Notification Preferences</h2>
+            <p>Fine-tune how and when you receive task alerts</p>
+        </div>
+
+        <!-- DARK MODE TOGGLE -->
+        <div class="theme-toggle">
+            <span>🌙</span>
+            <label class="switch">
+                <input type="checkbox" id="darkModeToggle">
+                <span class="slider"></span>
+            </label>
         </div>
     </div>
+
+    <!-- GRID -->
+    <div class="notify-grid">
+
+        <!-- SETTINGS CARD -->
+        <div class="notify-card glass">
+            <h5 class="card-title">⚙️ General Settings</h5>
+
+            <div class="notify-row">
+                <span>Notification Frequency</span>
+                <span class="pill gradient">Every Hour</span>
+            </div>
+
+            <div class="divider"></div>
+
+            <h6 class="section-title">Task Alerts</h6>
+
+            <div class="notify-toggle">
+                <span>📅 Due Tomorrow</span>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="notify-toggle">
+                <span>⏰ Due Today</span>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="notify-toggle">
+                <span>⚠️ Overdue Tasks</span>
+                <span class="pill danger">Always On</span>
+            </div>
+
+            <div class="divider"></div>
+
+            <h6 class="section-title">Quiet Hours</h6>
+            <div class="quiet-hours">
+                <span>🌙 10:00 PM – 7:00 AM</span>
+                <span class="pill soft">Enabled</span>
+            </div>
+        </div>
+
+        <!-- AI CARD -->
+        <div class="notify-card glass highlight">
+            <h5 class="card-title">🤖 Smart Insights</h5>
+
+            <div class="ai-box">
+                ✔ You usually complete tasks in <b>2 days</b>
+            </div>
+
+            <div class="ai-box warning">
+                ⚠️ 3 tasks may become overdue soon
+            </div>
+
+            <div class="ai-box success">
+                🔥 Your productivity peaks in the morning
+            </div>
+
+            <button class="save-btn">Save Preferences</button>
+        </div>
+
+    </div>
+
+    <div class="notify-footer">
+        © 2024 Task Management System
+    </div>
+
 </div>
+
+<!-- DARK MODE SCRIPT -->
+<script>
+    const toggle = document.getElementById("darkModeToggle");
+    const body = document.body;
+
+    // Load preference
+    if (localStorage.getItem("theme") === "dark") {
+        body.classList.add("dark-mode");
+        toggle.checked = true;
+    }
+
+    toggle.addEventListener("change", () => {
+        body.classList.toggle("dark-mode");
+        localStorage.setItem(
+            "theme",
+            body.classList.contains("dark-mode") ? "dark" : "light"
+        );
+    });
+</script>
